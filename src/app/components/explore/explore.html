@@ -1,0 +1,354 @@
+﻿<div class="explore-container animate-fade-in-up">
+  <div class="explore-hero-card">
+    <div class="hero-top-row">
+      <div class="hero-title-group">
+        <span class="hero-subtitle">Voyager Experience</span>
+        <h2>Explore Incredible India ðŸ‡®ðŸ‡³</h2>
+      </div>
+      <div class="weather-pill" title="Live Region Weather Forecast">
+        <span class="weather-icon">ðŸŒ¤ï¸</span>
+        <span class="weather-temp">24Â°C</span>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input 
+        type="text" 
+        placeholder="Search any place in India (e.g. Goa, Jaipur, Coorg...)" 
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        (keyup.enter)="addCustomDestination(searchQuery())"
+      />
+      @if (searchQuery()) {
+        <button class="btn-clear-search" (click)="searchQuery.set('')">âœ•</button>
+      }
+    </div>
+  </div>
+
+  
+  <div class="category-filters">
+    <button 
+      [class.active]="selectedCategory() === 'all'" 
+      (click)="setCategory('all')">
+      âœ¨ All
+    </button>
+    <button 
+      [class.active]="selectedCategory() === 'temples'" 
+      (click)="setCategory('temples')">
+      ðŸ›• Temples
+    </button>
+    <button 
+      [class.active]="selectedCategory() === 'heritage'" 
+      (click)="setCategory('heritage')">
+      ðŸ›ï¸ Heritage
+    </button>
+    <button 
+      [class.active]="selectedCategory() === 'nature'" 
+      (click)="setCategory('nature')">
+      ðŸŒ¿ Nature
+    </button>
+    <button 
+      [class.active]="selectedCategory() === 'saved'" 
+      (click)="setCategory('saved')">
+      â¤ï¸ Saved ({{ savedDestinationIds().size }})
+    </button>
+  </div>
+
+  
+  <div class="destinations-list">
+    @for (dest of filteredDestinations(); track dest.id) {
+      <div 
+        class="destination-card" 
+        [class.expanded]="expandedDestinationId() === dest.id"
+      >
+        <div class="card-image-wrapper" (click)="toggleExpand(dest.id)">
+          <img [src]="dest.image" [alt]="dest.title" class="card-image" />
+          
+          
+          <div class="card-top-actions">
+            <button 
+              class="btn-card-action btn-fav" 
+              [class.is-fav]="isFavorite(dest.id)" 
+              (click)="toggleFavorite(dest.id, $event)"
+              title="Bookmark / Save Destination">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" [attr.fill]="isFavorite(dest.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            </button>
+            <button 
+              class="btn-card-action btn-zoom" 
+              (click)="openLightbox(dest.image, dest.title, dest.location, $event)"
+              title="View Full Resolution Photo">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+            </button>
+          </div>
+
+          <div class="card-overlay">
+            <span class="location-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              {{ dest.location }}
+            </span>
+            <div class="overlay-badges">
+              @if (dest.category === 'temples') {
+                <span class="cat-pill temple-cat-pill">ðŸ›• Temple</span>
+              } @else if (dest.category === 'heritage') {
+                <span class="cat-pill heritage-cat-pill">ðŸ›ï¸ Heritage</span>
+              } @else {
+                <span class="cat-pill nature-cat-pill">ðŸŒ¿ Nature</span>
+              }
+              <span class="rating-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="icon-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                {{ dest.rating }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <div class="card-header" (click)="toggleExpand(dest.id)">
+            <h3 class="card-title">{{ dest.title }}</h3>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+
+          <div class="tag-list">
+            @for (tag of dest.tags; track tag) {
+              <span class="tag-chip">#{{ tag }}</span>
+            }
+          </div>
+
+          <p class="description">{{ dest.description }}</p>
+
+          
+          @if (expandedDestinationId() === dest.id) {
+            <div class="expanded-details animate-fade-in-up">
+              <div class="divider"></div>
+              
+              <div class="section-title">Must-Visit Spots</div>
+              <ul class="spots-list">
+                @for (spot of dest.spots; track spot) {
+                  <li>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spot-bullet"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    {{ spot }}
+                  </li>
+                }
+              </ul>
+
+              
+              <button 
+                class="btn-optimizer-trigger" 
+                [class.active]="activeOptimizerDestId() === dest.id"
+                (click)="toggleOptimizer(dest.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opt-icon"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                {{ activeOptimizerDestId() === dest.id ? 'Hide Nearby Route Optimizer' : 'Optimize Nearby Route (Cover All Spots)' }}
+              </button>
+
+              @if (activeOptimizerDestId() === dest.id) {
+                <div class="optimizer-panel animate-fade-in-up">
+                  <div class="optimizer-meta-card">
+                    <div class="meta-row">
+                      <span class="meta-label">Optimal Transit:</span>
+                      <span class="meta-val highlight-green">{{ dest.pathOptimizer.recommendedLocalMode }}</span>
+                    </div>
+                    <p class="meta-explanation">{{ dest.pathOptimizer.modeExplanation }}</p>
+                    <div class="meta-grid">
+                      <div class="grid-item">
+                        <span class="grid-lbl">Time Required</span>
+                        <span class="grid-val">{{ dest.pathOptimizer.estimatedDuration }}</span>
+                      </div>
+                      <div class="grid-item">
+                        <span class="grid-lbl">Local Budget</span>
+                        <span class="grid-val">{{ dest.pathOptimizer.estimatedCost }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+                  <div class="stepper-timeline">
+                    @for (step of dest.pathOptimizer.optimizedSequence; track step.spot; let idx = $index) {
+                      <div class="stepper-node">
+                        <div class="stepper-badge-col">
+                          <div class="stepper-number">{{ idx + 1 }}</div>
+                          @if (idx < dest.pathOptimizer.optimizedSequence.length - 1) {
+                            <div class="stepper-line"></div>
+                          }
+                        </div>
+                        <div class="stepper-content-col">
+                          <div class="stepper-header">
+                            <span class="stepper-spot-name">{{ step.spot }}</span>
+                            <span class="stepper-time">{{ step.timeOfDay }}</span>
+                          </div>
+                          <p class="stepper-tip">{{ step.tip }}</p>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              
+              <div class="divider"></div>
+              
+              @if (activeRouteDestId() !== dest.id) {
+                <button class="btn-route-trigger" (click)="openRoutePlanner(dest.id)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="route-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                  Get Route & Transport Guidance
+                </button>
+              } @else {
+                <div class="route-planner-panel animate-fade-in-up">
+                  <div class="route-panel-header">
+                    <span class="route-panel-title">Route Guidance</span>
+                    <button class="btn-close-route" (click)="resetRoutePlanner()">Cancel</button>
+                  </div>
+
+                  
+                  <div class="route-input-group">
+                    <input 
+                      #cityInput
+                      type="text" 
+                      placeholder="Enter starting city (e.g. Delhi, Mumbai)"
+                      (keyup.enter)="submitCustomCity(cityInput.value)"
+                    />
+                    <button class="btn-submit-city" (click)="submitCustomCity(cityInput.value)">Go</button>
+                  </div>
+
+                  
+                  <div class="quick-city-chips">
+                    <button [class.selected]="selectedStartCity() === 'Delhi'" (click)="selectQuickCity('Delhi')">Delhi</button>
+                    <button [class.selected]="selectedStartCity() === 'Mumbai'" (click)="selectQuickCity('Mumbai')">Mumbai</button>
+                    <button [class.selected]="selectedStartCity() === 'Bengaluru'" (click)="selectQuickCity('Bengaluru')">Bengaluru</button>
+                    <button [class.selected]="selectedStartCity() === 'Kochi'" (click)="selectQuickCity('Kochi')">Kochi</button>
+                  </div>
+
+                  
+                  @if (selectedStartCity()) {
+                    <div class="route-results-container animate-fade-in-up">
+                      <div class="results-header-text">
+                        From <strong>{{ selectedStartCity() }}</strong> to <strong>{{ dest.title }}</strong>:
+                      </div>
+
+                      <div class="transit-options-list">
+                        @for (opt of transitGuidance(); track opt.name) {
+                          <div class="transit-card" [class.best-recommendation]="opt.best">
+                            @if (opt.best) {
+                              <span class="best-badge">BEST CHOICE</span>
+                            }
+                            <div class="transit-card-header">
+                              <div class="transit-icon-wrapper">
+                                @if (opt.mode === 'train') {
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="16" height="16" rx="2"></rect><path d="M4 11h16M12 3v8M8 19l-2 3M16 19l2 3M8 15h8"></path></svg>
+                                } @else if (opt.mode === 'flight') {
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2h-3.5L10.8 1.8A1 1 0 0 0 10 1v5.2L6 8.5V7a1 1 0 0 0-2 0v2.5L2 10.2v1.5l2-.7V15a1 1 0 0 0 2 0v-4.5l4-2.7V23h2v-8h3l3 2.5a1 1 0 0 0 1.5-.8V16z"></path></svg>
+                                } @else if (opt.mode === 'bus') {
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="16" height="15" rx="2"></rect><circle cx="7.5" cy="21.5" r="1.5"></circle><circle cx="16.5" cy="21.5" r="1.5"></circle><path d="M4 8h16M4 13h16M8 3v5M16 3v5"></path></svg>
+                                } @else {
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                                }
+                              </div>
+                              <div class="transit-info-text">
+                                <h5>{{ opt.name }}</h5>
+                                <div class="transit-meta">
+                                  <span class="transit-duration">{{ opt.duration }}</span>
+                                  <span class="transit-divider">â€¢</span>
+                                  <span class="transit-cost">Est. Cost: â‚¹{{ (opt.cost * 83).toFixed(0) }}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <p class="transit-tip">{{ opt.tip }}</p>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <div class="divider"></div>
+
+              <div class="section-title">Your Itinerary Plan</div>
+              <div class="itinerary-list">
+                @for (item of dest.itinerary; track item.day) {
+                  <div class="itinerary-item" [class.completed]="item.done" (click)="toggleItineraryItem(dest.id, item.day)">
+                    <div class="checkbox-wrapper">
+                      <div class="custom-checkbox">
+                        @if (item.done) {
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        }
+                      </div>
+                    </div>
+                    <div class="itinerary-text">
+                      <div class="itinerary-header">
+                        <span class="day-badge">Day {{ item.day }}</span>
+                        <span class="itinerary-title">{{ item.title }}</span>
+                      </div>
+                      <p class="itinerary-desc">{{ item.desc }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              
+              <div class="divider"></div>
+              
+              <div class="phrase-header-row">
+                <div class="section-title">Local Phrase Guide</div>
+                <div class="speed-toggle-group">
+                  <span class="speed-label">Speed:</span>
+                  <button class="btn-speed-pill" [class.active]="playbackSpeed() === 1.0" (click)="setSpeed(1.0)">1.0x</button>
+                  <button class="btn-speed-pill" [class.active]="playbackSpeed() === 0.75" (click)="setSpeed(0.75)">0.75x Slow-Mo</button>
+                </div>
+              </div>
+
+              <div class="phrase-list">
+                @for (phrase of dest.phrases; track phrase.original) {
+                  <div class="phrase-card" [class.glowing-sound]="activePhraseId() === (dest.id + '_' + phrase.original)">
+                    <div class="phrase-details">
+                      <span class="phrase-original">{{ phrase.original }}</span>
+                      <span class="phrase-pronounce">"{{ phrase.pronounce }}"</span>
+                      <span class="phrase-meaning">{{ phrase.meaning }}</span>
+                    </div>
+                    <button class="btn-play-phrase" (click)="playPhraseAudio(dest.id, phrase)" title="Listen Pronunciation">
+                      @if (activePhraseId() === (dest.id + '_' + phrase.original)) {
+                        <div class="phrase-visualizer">
+                          <div class="phrase-bar"></div>
+                          <div class="phrase-bar"></div>
+                          <div class="phrase-bar"></div>
+                        </div>
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      }
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-state animate-fade-in-up">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <p>No exact match found for "{{ searchQuery() }}" in default list.</p>
+        
+        @if (searchQuery().trim()) {
+          <button class="btn-generate-dest pulse-glow" (click)="addCustomDestination(searchQuery())">
+            âœ¨ Instant Generate Travel Companion Guide for "{{ searchQuery() }}"
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  
+  @if (lightboxImage()) {
+    <div class="lightbox-backdrop animate-fade-in-up" (click)="closeLightbox()">
+      <div class="lightbox-panel" (click)="$event.stopPropagation()">
+        <button class="btn-close-lightbox" (click)="closeLightbox()">âœ•</button>
+        <img [src]="lightboxImage()?.url" [alt]="lightboxImage()?.title" class="lightbox-img" />
+        <div class="lightbox-caption">
+          <h4>{{ lightboxImage()?.title }}</h4>
+          <p>{{ lightboxImage()?.location }}</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+

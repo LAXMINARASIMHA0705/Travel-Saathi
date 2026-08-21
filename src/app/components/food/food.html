@@ -1,0 +1,305 @@
+﻿@if (isOpen()) {
+  
+  <div class="food-drawer-backdrop" (click)="closeDrawer()"></div>
+
+  
+  <div class="food-drawer animate-fade-in-up">
+    
+    <div class="drawer-header">
+      <button class="btn-close-drawer" (click)="closeDrawer()" title="Back to Home">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </button>
+      <h3>Bites Delivery</h3>
+      <div style="width: 20px;"></div>
+    </div>
+
+    @if (orderStatus() === 'idle') {
+      
+      <div class="food-header">
+        <div class="header-text">
+          <h2>Local Cuisine</h2>
+          <p>Order direct to your hotel, train seat, or bus stop.</p>
+        </div>
+        
+        <button class="cart-trigger-btn" (click)="toggleCart()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          @if (cartCount() > 0) {
+            <span class="cart-badge">{{ cartCount() }}</span>
+          }
+        </button>
+      </div>
+
+      
+      <div class="chef-specials-section">
+        <h4>âš¡ Chef's Specials (Quick Add)</h4>
+        <div class="chef-specials-scroll">
+          @for (item of quickBites(); track item.id) {
+            <div class="chef-special-card">
+              <img [src]="item.image" [alt]="item.name" class="special-thumb" />
+              <div class="special-info">
+                <h5>{{ item.name }}</h5>
+                <span class="special-price">${{ item.price.toFixed(2) }}</span>
+              </div>
+              <button class="btn-special-add" (click)="addToCart(item)" title="Quick Add">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      
+      <div class="food-category-filters">
+        <button [class.active]="selectedCategory() === 'all'" (click)="selectedCategory.set('all')">âœ¨ All</button>
+        <button [class.active]="selectedCategory() === 'mains'" (click)="selectedCategory.set('mains')">ðŸ² Mains</button>
+        <button [class.active]="selectedCategory() === 'sides'" (click)="selectedCategory.set('sides')">ðŸŸ Sides</button>
+        <button [class.active]="selectedCategory() === 'desserts'" (click)="selectedCategory.set('desserts')">ðŸ¨ Desserts</button>
+      </div>
+
+      
+      <div class="menu-list">
+        @for (item of filteredMenu(); track item.id) {
+          <div class="menu-card">
+            <div class="menu-image-wrapper">
+              <img [src]="item.image" [alt]="item.name" class="menu-image" />
+              <div class="menu-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" class="icon-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                {{ item.rating }}
+              </div>
+            </div>
+            <div class="menu-content">
+              <h3 class="menu-title">{{ item.name }}</h3>
+              <p class="menu-desc">{{ item.description }}</p>
+              <div class="menu-footer">
+                <span class="menu-price">${{ item.price.toFixed(2) }}</span>
+                <button class="btn-add-cart" (click)="addToCart(item)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      
+      @if (isCartOpen()) {
+        <div class="inner-cart-backdrop" (click)="toggleCart()"></div>
+        <div class="inner-cart-drawer animate-fade-in-up">
+          <div class="inner-cart-header">
+            <h3>Your Basket</h3>
+            <button class="btn-close-cart" (click)="toggleCart()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+
+          @if (cart().length > 0) {
+            
+            <div class="cart-items-container">
+              @for (item of cart(); track item.menuItem.id) {
+                <div class="cart-item">
+                  <img [src]="item.menuItem.image" [alt]="item.menuItem.name" class="cart-item-thumb" />
+                  <div class="cart-item-info">
+                    <span class="cart-item-name">{{ item.menuItem.name }}</span>
+                    <span class="cart-item-price">${{ (item.menuItem.price * item.quantity).toFixed(2) }}</span>
+                  </div>
+                  <div class="quantity-controls">
+                    <button class="qty-btn" (click)="updateQuantity(item.menuItem.id, -1)">-</button>
+                    <span class="qty-val">{{ item.quantity }}</span>
+                    <button class="qty-btn" (click)="updateQuantity(item.menuItem.id, 1)">+</button>
+                  </div>
+                </div>
+              }
+            </div>
+
+            
+            <div class="delivery-location-selector">
+              <h4>Deliver To:</h4>
+              <div class="location-chips">
+                <button 
+                  [class.active]="deliveryLocationType() === 'hotel'" 
+                  (click)="selectLocationType('hotel')">
+                  ðŸ¨ Hotel
+                </button>
+                <button 
+                  [class.active]="deliveryLocationType() === 'train'" 
+                  (click)="selectLocationType('train')">
+                  ðŸš‚ Train
+                </button>
+                <button 
+                  [class.active]="deliveryLocationType() === 'bus'" 
+                  (click)="selectLocationType('bus')">
+                  ðŸšŒ Bus Stop
+                </button>
+              </div>
+
+              
+              <div class="delivery-details-form">
+                @if (deliveryLocationType() === 'hotel') {
+                  <div class="form-row">
+                    <input 
+                      type="text" 
+                      placeholder="Hotel Name" 
+                      [value]="hotelName()" 
+                      (input)="hotelName.set($any($event.target).value)" 
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Room No" 
+                      [value]="roomNumber()" 
+                      (input)="roomNumber.set($any($event.target).value)" 
+                      style="width: 80px;"
+                    />
+                  </div>
+                }
+
+                @if (deliveryLocationType() === 'train') {
+                  <div class="form-row flex-column">
+                    <input 
+                      type="text" 
+                      placeholder="Railway Station Name" 
+                      [value]="stationName()" 
+                      (input)="stationName.set($any($event.target).value)" 
+                    />
+                    <div class="form-row mt-6">
+                      <input 
+                        type="text" 
+                        placeholder="Train Number" 
+                        [value]="trainNumber()" 
+                        (input)="trainNumber.set($any($event.target).value)" 
+                      />
+                      <input 
+                        type="text" 
+                        placeholder="Coach & Seat/Berth No" 
+                        [value]="coachBerth()" 
+                        (input)="coachBerth.set($any($event.target).value)" 
+                      />
+                    </div>
+                  </div>
+                }
+
+                @if (deliveryLocationType() === 'bus') {
+                  <div class="form-row flex-column">
+                    <input 
+                      type="text" 
+                      placeholder="Bus Terminal / Stop Name" 
+                      [value]="busTerminalName()" 
+                      (input)="busTerminalName.set($any($event.target).value)" 
+                    />
+                    <div class="form-row mt-6">
+                      <input 
+                        type="text" 
+                        placeholder="Bus Operator (e.g. SRS, VRL)" 
+                        [value]="busOperator()" 
+                        (input)="busOperator.set($any($event.target).value)" 
+                      />
+                      <input 
+                        type="text" 
+                        placeholder="Seat Number" 
+                        [value]="seatNumber()" 
+                        (input)="seatNumber.set($any($event.target).value)" 
+                      />
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            
+            <div class="cart-summary">
+              <div class="summary-row">
+                <span>Subtotal</span>
+                <span>${{ cartTotal().toFixed(2) }}</span>
+              </div>
+              <div class="summary-row">
+                <span>Travel Delivery</span>
+                <span class="delivery-free">FREE</span>
+              </div>
+              <div class="divider"></div>
+              <div class="summary-row total">
+                <span>Total</span>
+                <span>${{ cartTotal().toFixed(2) }}</span>
+              </div>
+              <button class="btn-checkout" (click)="checkout()">
+                Checkout Order
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="checkout-arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+              </button>
+            </div>
+          } @else {
+            
+            <div class="cart-empty">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-cart-icon"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              <p>Your basket is empty. Add delicious local food from the menu above!</p>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    @if (orderStatus() === 'checking_out') {
+      
+      <div class="checkout-loading animate-fade-in-up">
+        <div class="spinner"></div>
+        <h3>Transmitting Order</h3>
+        <p>Connecting with local courier & kitchen. Please hold on...</p>
+      </div>
+    }
+
+    @if (orderStatus() === 'placed') {
+      
+      <div class="order-tracker animate-fade-in-up">
+        <div class="tracker-header">
+          <div class="success-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          </div>
+          <h2>Order Dispatched!</h2>
+          <p>Your meal is being prepared locally and is on its way.</p>
+        </div>
+
+        
+        <div class="tracker-timeline">
+          <div class="timeline-step" [class.active]="deliveryStep() >= 1">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            <div class="step-info">
+              <h4>Kitchen Preparing</h4>
+              <p>{{ preparationalText() }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-step" [class.active]="deliveryStep() >= 2">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            </div>
+            <div class="step-info">
+              <h4>Out for Delivery</h4>
+              <p>{{ deliveryText() }}</p>
+            </div>
+          </div>
+
+          <div class="timeline-step" [class.active]="deliveryStep() >= 3">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <div class="step-info">
+              <h4>Arrived at Location</h4>
+              <p>{{ arrivalText() }}</p>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="map-placeholder">
+          <div class="map-pulse" [class.dispatched]="deliveryStep() === 2" [class.arrived]="deliveryStep() === 3"></div>
+          <div class="map-hotel-pin"></div>
+        </div>
+
+        <button class="btn-reset-order" (click)="resetOrder()">
+          Back to Menu
+        </button>
+      </div>
+    }
+  </div>
+}
+

@@ -1,0 +1,533 @@
+﻿<div class="phone-frame animate-fade-in-up">
+  
+  <div class="phone-status-bar">
+    <div class="status-time">20:35</div>
+    <div class="status-notch"></div>
+    <div class="status-icons">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="16" width="3" height="5" rx="1"></rect><rect x="7" y="12" width="3" height="9" rx="1"></rect><rect x="12" y="8" width="3" height="13" rx="1"></rect><rect x="17" y="3" width="3" height="18" rx="1"></rect></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20" stroke-width="3"></line></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect><line x1="22" y1="11" x2="22" y2="13"></line><line x1="5" y1="11" x2="13" y2="11" stroke-width="4"></line></svg>
+    </div>
+  </div>
+
+  
+  <header class="app-header">
+    <div class="header-left">
+      <span class="logo-text">VOYAGER</span>
+    </div> 
+    <div class="header-right">
+      <button class="icon-btn-header" (click)="isProfileDrawerOpen.set(true)">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Avatar" class="avatar-img" />
+      </button>
+    </div>
+  </header>
+
+  
+  <div class="ai-companion-bar" [class.listening]="aiService.isAiListening()">
+    <div class="ai-avatar" (click)="enableWakeWordListening($event)" role="button" aria-label="Activate voice assistant">
+      <div class="ai-orb" [class.pulsing]="aiService.isAiListening()"></div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="mic-icon"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+    </div>
+    <div class="ai-info" (click)="openAiConcierge()">
+      <div class="ai-name-row">
+        <span class="ai-name">Maya Advisor</span>
+      </div>
+      <p class="ai-text">
+        @if (aiService.isAiListening()) {
+          <span class="speaking-wave">Listening...</span>
+        } @else {
+          ðŸŽ™ï¸ Professional travel advisor â€¢ tap to activate voice help
+        }
+      </p>
+    </div>
+  </div>
+
+  
+  <main class="app-viewport">
+    <app-explore />
+
+    
+    @if (isAiDrawerOpen()) {
+      <div class="drawer-backdrop" (click)="isAiDrawerOpen.set(false)"></div>
+      <div class="ai-drawer-panel animate-fade-in-up">
+        <div class="ai-drawer-header">
+          <div class="ai-drawer-title">
+            <div class="ai-avatar-mini">
+              <div class="ai-orb-pulse"></div>
+            </div>
+            <div>
+              <h3>Voyager Advisor</h3>
+              <div class="ai-status-online">
+                @if (aiService.isGeminiActive()) {
+                  <span class="status-badge-gemini">ðŸŸ¢ Gemini 1.5 Active</span>
+                } @else {
+                  <span>â— Online & Ready</span>
+                }
+              </div>
+            </div>
+          </div>
+          
+          <div class="drawer-header-actions">
+            @if (aiService.isAiSpeaking() || aiService.isAiListening()) {
+              <div class="audio-waveform-bars" title="Audio Waveform Active">
+                <span class="bar bar-1"></span>
+                <span class="bar bar-2"></span>
+                <span class="bar bar-3"></span>
+                <span class="bar bar-4"></span>
+                <span class="bar bar-5"></span>
+              </div>
+            }
+
+            <button 
+              class="btn-talkback-toggle" 
+              [class.enabled]="aiService.isContinuousVoiceMode()"
+              (click)="aiService.toggleContinuousMode()"
+              title="Hands-Free Auto-Listen Loop">
+              <span>ðŸ” Auto-Listen: {{ aiService.isContinuousVoiceMode() ? 'ON' : 'OFF' }}</span>
+            </button>
+
+            <button 
+              class="btn-talkback-toggle" 
+              [class.is-speaking]="aiService.isAiSpeaking()"
+              [class.enabled]="aiService.isTalkBackEnabled()"
+              (click)="toggleTalkBack()"
+              title="Toggle AI Voice Talk-Back Output">
+              @if (aiService.isAiSpeaking()) {
+                <span class="speaking-wave">ðŸ”Š Speaking...</span>
+              } @else if (aiService.isTalkBackEnabled()) {
+                <span>ðŸ”Š Voice: ON</span>
+              } @else {
+                <span>ðŸ”‡ Voice: OFF</span>
+              }
+            </button>
+            
+            <button class="btn-close-drawer" (click)="isAiDrawerOpen.set(false)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          </div>
+        </div>
+
+        
+        <div class="gemini-key-bar">
+          <input
+            #geminiInput 
+            type="password" 
+            placeholder="Paste Gemini API Key for live real-time LLM..." 
+            [value]="aiService.geminiApiKey()"
+            (keyup.enter)="aiService.setGeminiApiKey(geminiInput.value)"
+          />
+          <button class="btn-save-key" (click)="aiService.setGeminiApiKey(geminiInput.value)">
+            {{ aiService.isGeminiActive() ? 'âœ“ Key Saved' : 'Connect Key' }}
+          </button>
+        </div>
+
+        
+        <div class="ai-persona-bar">
+          <button class="persona-btn" [class.active]="aiService.aiPersona() === 'advisor'" (click)="setPersona('advisor')" aria-label="Switch to Advisor persona">ðŸ§  Advisor</button>
+          <button class="persona-btn" [class.active]="aiService.aiPersona() === 'guide'" (click)="setPersona('guide')" aria-label="Switch to Guide persona">ðŸ§­ Guide</button>
+          <button class="persona-btn" [class.active]="aiService.aiPersona() === 'foodie'" (click)="setPersona('foodie')" aria-label="Switch to Foodie persona">ðŸ² Foodie</button>
+          <button class="persona-btn" [class.active]="aiService.aiPersona() === 'budget'" (click)="setPersona('budget')" aria-label="Switch to Budget persona">ðŸ’¸ Budget</button>
+          <button class="persona-btn" [class.active]="aiService.aiPersona() === 'translator'" (click)="setPersona('translator')" aria-label="Switch to Translator persona">ðŸ—£ï¸ Translate</button>
+        </div>
+
+        @if (!tripPreferencesCompleted()) {
+          <div class="trip-preferences-card">
+            <div class="trip-preferences-title">Trip preferences</div>
+            <div class="trip-pref-row">
+              <label>Budget</label>
+              <div class="pref-options">
+                <button class="pref-chip" [class.active]="tripPreferences()['budget'] === 'budget'" (click)="selectTripPreference('budget', 'budget')" aria-label="Set budget preference to Budget">Budget</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['budget'] === 'balanced'" (click)="selectTripPreference('budget', 'balanced')" aria-label="Set budget preference to Balanced">Balanced</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['budget'] === 'luxury'" (click)="selectTripPreference('budget', 'luxury')" aria-label="Set budget preference to Luxury">Luxury</button>
+              </div>
+            </div>
+            <div class="trip-pref-row">
+              <label>Transport</label>
+              <div class="pref-options">
+                <button class="pref-chip" [class.active]="tripPreferences()['transport'] === 'train'" (click)="selectTripPreference('transport', 'train')" aria-label="Set transport preference to Train">Train</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['transport'] === 'car'" (click)="selectTripPreference('transport', 'car')" aria-label="Set transport preference to Car">Car</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['transport'] === 'flexible'" (click)="selectTripPreference('transport', 'flexible')" aria-label="Set transport preference to Flexible">Flexible</button>
+              </div>
+            </div>
+            <div class="trip-pref-row">
+              <label>Pace</label>
+              <div class="pref-options">
+                <button class="pref-chip" [class.active]="tripPreferences()['pace'] === 'relaxed'" (click)="selectTripPreference('pace', 'relaxed')" aria-label="Set pace preference to Relaxed">Relaxed</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['pace'] === 'balanced'" (click)="selectTripPreference('pace', 'balanced')" aria-label="Set pace preference to Balanced">Balanced</button>
+                <button class="pref-chip" [class.active]="tripPreferences()['pace'] === 'packed'" (click)="selectTripPreference('pace', 'packed')" aria-label="Set pace preference to Packed">Packed</button>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (tripPreferencesCompleted()) {
+          <div class="trip-preferences-dismissed">
+            <button class="pref-toggle-btn" (click)="reopenTripPreferences()">Edit preferences</button>
+          </div>
+        }
+
+        <div class="chat-body">
+          @for (msg of aiService.chatMessages(); track msg) {
+            <div class="chat-bubble-row" [class.user-row]="msg.sender === 'user'">
+              <div class="chat-bubble" [class.user-bubble]="msg.sender === 'user'">
+                
+                
+                @if (msg.sender === 'ai' && msg.thinkingSteps && msg.thinkingSteps.length > 0) {
+                  <details class="thinking-accordion">
+                    <summary class="thinking-summary">
+                      <span>âš¡ Searched {{ msg.sources?.length || 3 }} sources & synthesized</span>
+                    </summary>
+                    <div class="thinking-steps">
+                      @for (step of msg.thinkingSteps; track step) {
+                        <div class="step-line">{{ step }}</div>
+                      }
+                    </div>
+                  </details>
+                }
+
+                
+                @if (msg.sender === 'ai' && msg.sources && msg.sources.length > 0) {
+                  <div class="sources-row">
+                    @for (s of msg.sources; track s.name) {
+                      <span class="source-chip">
+                        <span class="source-icon">{{ s.icon }}</span>
+                        <span class="source-name">{{ s.name }}</span>
+                      </span>
+                    }
+                  </div>
+                }
+
+                <p class="msg-text-content" [innerHTML]="aiService.formatMarkdownText(msg.text)"></p>
+
+                
+                @if (msg.actionType === 'music' && msg.actionData) {
+                  <div class="ai-action-card music-card animate-fade-in-up">
+                    <img [src]="msg.actionData.image" [alt]="'Album artwork for ' + msg.actionData.title" class="card-art" />
+                    <div class="card-info">
+                      <span class="card-title">{{ msg.actionData.title }}</span>
+                      <span class="card-sub">{{ msg.actionData.artist }}</span>
+                    </div>
+                    <button class="btn-card-action play-btn" (click)="playTrackFromAi(msg.actionData.trackId)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                      Play Track
+                    </button>
+                  </div>
+                }
+
+                
+                @if (msg.actionType === 'food' && msg.actionData) {
+                  <div class="ai-action-card food-card animate-fade-in-up">
+                    <div class="card-info">
+                      <div class="card-header-row">
+                        <span class="card-title">{{ msg.actionData.name }}</span>
+                        <span class="card-price">â‚¹{{ msg.actionData.price }}</span>
+                      </div>
+                      <span class="card-sub">â­ {{ msg.actionData.rating }} â€¢ {{ msg.actionData.prepTime }}</span>
+                    </div>
+                    <button class="btn-card-action food-btn" (click)="addFoodFromAi(msg.actionData)">
+                      âž• Add to Basket <span class="visually-hidden">{{ msg.actionData.name }}</span>
+                    </button>
+                  </div>
+                }
+
+                
+                @if (msg.actionType === 'itinerary' && msg.actionData) {
+                  <div class="ai-action-card itinerary-card animate-fade-in-up">
+                    <h4 class="itinerary-title">ðŸ—ºï¸ {{ msg.actionData.title }}</h4>
+                    @if (msg.actionData.bestFit) {
+                      <div class="best-fit-banner">
+                        <span class="best-fit-pill">â­ Best fit</span>
+                        <span>{{ msg.actionData.bestFit }}</span>
+                      </div>
+                    }
+                    <div class="itinerary-list">
+                      @for (item of msg.actionData.days; track item.day) {
+                        <div class="itinerary-day-item">
+                          <strong class="day-label">{{ item.day }}: {{ item.title }}</strong>
+                          <p class="day-desc">{{ item.details }}</p>
+                        </div>
+                      }
+                    </div>
+                    @if (msg.actionData.options && msg.actionData.options.length > 0) {
+                      <div class="option-row">
+                        @for (option of msg.actionData.options; track option.label) {
+                          <button class="option-chip" (click)="sendChatMessage(option.prompt)" [attr.aria-label]="'Suggest ' + option.label + ' option'">
+                            {{ option.label }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+
+                
+                @if (msg.actionType === 'phrase' && msg.actionData) {
+                  <div class="ai-action-card phrase-card animate-fade-in-up">
+                    <div class="phrase-grid">
+                      @for (p of msg.actionData; track p.label) {
+                        <div class="phrase-item" (click)="aiService.speakText(p.local)">
+                          <div class="phrase-text">
+                            <span class="phrase-label">{{ p.label }}</span>
+                            <span class="phrase-local">"{{ p.local }}"</span>
+                          </div>
+                          <button class="btn-listen-phrase" [attr.aria-label]="'Listen to ' + p.local + ' pronunciation'" title="Listen pronunciation">ðŸ”Š</button>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                
+                @if (msg.sender === 'ai' && msg.followUps && msg.followUps.length > 0) {
+                  <div class="followup-section">
+                    <span class="followup-label">Follow-up questions:</span>
+                    <div class="followup-chips">
+                      @for (f of msg.followUps; track f) {
+                        <button class="option-chip" (click)="sendChatMessage(f)" [attr.aria-label]="'Ask follow-up: ' + f">
+                          <span>ðŸ‘‰ {{ f }}</span>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <div class="chat-bubble-footer">
+                  <span class="chat-time">{{ msg.time }}</span>
+                  @if (msg.sender === 'ai') {
+                    <button class="btn-speak-bubble" (click)="aiService.speakText(msg.text)" title="Listen to response out loud">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                      Listen
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (aiService.isAiThinking()) {
+            <div class="chat-bubble-row">
+              <div class="chat-bubble ai-bubble thinking-bubble">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="chat-suggestions">
+          @if (aiService.aiPersona() === 'foodie') {
+            <button class="chip-btn" (click)="sendChatMessage('Best Biryani nearby')" aria-label="Suggest Best Biryani nearby">ðŸ› Top Biryani</button>
+            <button class="chip-btn" (click)="sendChatMessage('Crispy Pesarattu Dosa')" aria-label="Suggest Crispy Pesarattu Dosa">ðŸ¥ž Pesarattu Dosa</button>
+            <button class="chip-btn" (click)="sendChatMessage('South Indian Thali')" aria-label="Suggest South Indian Thali">ðŸ± South Thali</button>
+            <button class="chip-btn" (click)="sendChatMessage('Araku Organic Coffee')" aria-label="Suggest Araku Organic Coffee">â˜• Filter Coffee</button>
+          } @else if (aiService.aiPersona() === 'budget') {
+            <button class="chip-btn" (click)="sendChatMessage('Auto rickshaw cab fares')" aria-label="Suggest Auto rickshaw cab fares">ðŸ›º Auto Fares</button>
+            <button class="chip-btn" (click)="sendChatMessage('Average hotel room rates')" aria-label="Suggest Average hotel room rates">ðŸ¨ Hotel Rates</button>
+            <button class="chip-btn" (click)="sendChatMessage('Restaurant tipping rules')" aria-label="Suggest Restaurant tipping rules">ðŸ’³ Tipping Rules</button>
+          } @else if (aiService.aiPersona() === 'translator') {
+            <button class="chip-btn" (click)="sendChatMessage('Translate Telugu phrases')" aria-label="Suggest Translate Telugu phrases">ðŸ—£ï¸ Telugu Phrases</button>
+            <button class="chip-btn" (click)="sendChatMessage('Translate Hindi phrases')" aria-label="Suggest Translate Hindi phrases">ðŸ—£ï¸ Hindi Phrases</button>
+            <button class="chip-btn" (click)="sendChatMessage('How to ask price')" aria-label="Suggest How to ask price">ðŸ’° Asking Price</button>
+          } @else {
+            <button class="chip-btn" (click)="sendChatMessage('Araku Valley Scenic Tour')" aria-label="Suggest Araku Valley Scenic Tour">ðŸš‚ Araku Tour</button>
+            <button class="chip-btn" (click)="sendChatMessage('Munnar Hill Escape')" aria-label="Suggest Munnar Hill Escape">ðŸ”ï¸ Munnar Escape</button>
+            <button class="chip-btn" (click)="sendChatMessage('Agra Taj Mahal Plan')" aria-label="Suggest Agra Taj Mahal Plan">ðŸ•Œ Agra Plan</button>
+            <button class="chip-btn" (click)="sendChatMessage('Goa Beach Itinerary')" aria-label="Suggest Goa Beach Itinerary">ðŸ–ï¸ Goa Itinerary</button>
+            <button class="chip-btn" (click)="sendChatMessage('Recommend travel lofi song')" aria-label="Suggest Recommend travel lofi song">ðŸŽµ Travel Lofi</button>
+          }
+        </div>
+
+        <div class="chat-input-bar">
+          <input 
+            #chatInput 
+            type="text" 
+            [placeholder]="aiService.isAiThinking() ? 'Maya is thinking...' : 'Ask AI Concierge anything...'" 
+            (keyup.enter)="sendChatMessage(chatInput.value); chatInput.value = ''"
+            [disabled]="aiService.isAiThinking()"
+          />
+          <button class="btn-send-chat" (click)="sendChatMessage(chatInput.value); chatInput.value = ''" [disabled]="aiService.isAiThinking()">
+            @if (aiService.isAiThinking()) {
+              <div class="input-spinner"></div>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            }
+          </button>
+        </div>
+      </div>
+    }
+
+    
+    @if (isProfileDrawerOpen()) {
+      <div class="drawer-backdrop" (click)="isProfileDrawerOpen.set(false)"></div>
+      <div class="profile-drawer-panel animate-fade-in-up">
+        <div class="profile-drawer-header">
+          <button class="btn-close-drawer" (click)="isProfileDrawerOpen.set(false)" title="Back to Home">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <h3>Your Account</h3>
+          <div style="width: 20px;"></div> 
+        </div>
+
+        <div class="profile-view">
+          <div class="profile-header-card">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Sophia Sterling's avatar" class="profile-large-avatar" />
+            <h3 class="profile-name">Sophia Sterling</h3>
+            <span class="profile-status">Premium Backpacker</span>
+          </div>
+
+          
+          <div class="settings-section">
+            <h4>ðŸ’° Trip Budget Estimator</h4>
+            <div class="budget-card">
+              <div class="budget-controls">
+                <div class="budget-input-group">
+                  <label>Duration: <strong>{{ tripDays() }} Days</strong></label>
+                  <input type="range" min="1" max="14" [value]="tripDays()" (input)="tripDays.set(+$any($event.target).value)" />
+                </div>
+                <div class="budget-input-group">
+                  <label>Travelers: <strong>{{ travelerCount() }} People</strong></label>
+                  <input type="range" min="1" max="6" [value]="travelerCount()" (input)="travelerCount.set(+$any($event.target).value)" />
+                </div>
+              </div>
+
+              <div class="budget-style-chips">
+                <button [class.active]="travelStyle() === 'budget'" (click)="travelStyle.set('budget')" aria-label="Set travel style to Backpacker">Backpacker</button>
+                <button [class.active]="travelStyle() === 'comfort'" (click)="travelStyle.set('comfort')" aria-label="Set travel style to Comfort">Comfort</button>
+                <button [class.active]="travelStyle() === 'luxury'" (click)="travelStyle.set('luxury')" aria-label="Set travel style to Luxury">Luxury</button>
+              </div>
+
+              <div class="budget-breakdown">
+                <div class="bd-row"><span>ðŸ¨ Stay / Lodging:</span> <strong>â‚¹{{ estimatedBudget().stay.toLocaleString('en-IN') }}</strong></div>
+                <div class="bd-row"><span>ðŸ› Meals & Snacks:</span> <strong>â‚¹{{ estimatedBudget().food.toLocaleString('en-IN') }}</strong></div>
+                <div class="bd-row"><span>ðŸš‚ Transit & Cabs:</span> <strong>â‚¹{{ estimatedBudget().transit.toLocaleString('en-IN') }}</strong></div>
+                <div class="bd-row"><span>ðŸŽŸï¸ Tickets & Entry:</span> <strong>â‚¹{{ estimatedBudget().sightseeing.toLocaleString('en-IN') }}</strong></div>
+                <div class="divider"></div>
+                <div class="bd-row total"><span>Est. Total Budget:</span> <strong class="highlight-green">â‚¹{{ estimatedBudget().grandTotal.toLocaleString('en-IN') }}</strong></div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="settings-section">
+            <h4>ðŸš¨ Emergency Helplines (India)</h4>
+            <div class="emergency-grid">
+              <div class="emergency-chip" role="button" aria-label="Call Police, number 112"><span>Police</span> <strong>112</strong></div>
+              <div class="emergency-chip" role="button" aria-label="Call Tourist Help, number 1363"><span>Tourist Help</span> <strong>1363</strong></div>
+              <div class="emergency-chip" role="button" aria-label="Call Railways, number 139"><span>Railways</span> <strong>139</strong></div>
+              <div class="emergency-chip" role="button" aria-label="Call Ambulance, number 108"><span>Ambulance</span> <strong>108</strong></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>Travel Assistant Config</h4>
+            <div class="settings-list">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-title">Voice Recognition</span>
+                  <p class="setting-subtitle">Control app using hands-free voice commands.</p>
+                </div>
+                <label class="switch" aria-label="Toggle Voice Recognition">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <span class="setting-title">Translate Mode</span>
+                  <p class="setting-subtitle">Auto-translate signage & speech to English.</p>
+                </div>
+                <label class="switch" aria-label="Toggle Translate Mode">
+                  <input type="checkbox" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    
+    <app-music 
+      [(isOpen)]="isMusicDrawerOpen"
+      [(currentTrackIndex)]="musicTrackIndex"
+      [(isPlaying)]="musicIsPlaying"
+      [(playProgress)]="musicPlayProgress"
+      [(isShuffle)]="musicIsShuffle"
+      [(isRepeat)]="musicIsRepeat"
+    />
+
+    
+    <app-food 
+      [(isOpen)]="isFoodDrawerOpen"
+      [(cart)]="foodCart"
+      [(orderStatus)]="foodOrderStatus"
+      [(deliveryStep)]="foodDeliveryStep"
+    />
+  </main>
+
+  
+  <div class="bottom-modules-dock">
+    
+    <div class="mini-music-card" (click)="isMusicDrawerOpen.set(true)" role="button" aria-label="Open Music Player">
+      <img [src]="currentTrack().image" alt="Artwork" class="mini-art" [class.playing]="musicIsPlaying()" />
+      <div class="mini-track-info">
+        <span class="mini-title">{{ currentTrack().title }}</span>
+        <span class="mini-artist">{{ currentTrack().artist }}</span>
+      </div>
+      
+      <button class="mini-play-btn" (click)="toggleMusicPlay($event)">
+        @if (musicIsPlaying()) { 
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        }
+      </button>
+    </div>
+
+    
+    <div class="mini-food-card" (click)="isFoodDrawerOpen.set(true)" [class.active-order]="foodOrderStatus() === 'placed'" role="button" aria-label="Open Food Order">
+      <div class="mini-food-icon-wrapper" [class.scooter-pulse]="foodOrderStatus() === 'placed'">
+        @if (foodOrderStatus() === 'placed') {
+          
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+        } @else {
+          
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        }
+      </div>
+      <div class="mini-food-info">
+        @if (foodOrderStatus() === 'placed') {
+          <span class="mini-food-title">Order Out!</span>
+          <span class="mini-food-sub">
+            @if (foodDeliveryStep() === 1) { Preparing }
+            @if (foodDeliveryStep() === 2) { Out on Scooter }
+            @if (foodDeliveryStep() === 3) { Arrived in Lobby }
+          </span>
+        } @else if (cartCount() > 0) {
+          <span class="mini-food-title">Basket ({{ cartCount() }})</span>
+          <span class="mini-food-sub">â‚¹{{ (cartTotal() * 83).toFixed(0) }}</span>
+        } @else {
+          <span class="mini-food-title">Order Bites</span>
+          <span class="mini-food-sub">Local Cuisines</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  
+  <nav class="app-bottom-nav">
+    <button class="nav-tab-btn active" aria-label="Explore tab">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+      <span>Explore</span>
+    </button>
+
+    <button class="nav-tab-btn" (click)="isProfileDrawerOpen.set(true)" aria-label="Settings tab">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <span>Settings</span>
+    </button>
+  </nav>
+</div>
+
