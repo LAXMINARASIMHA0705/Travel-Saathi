@@ -43,7 +43,7 @@ export class FoodComponent {
       name: 'Andhra Avakaya Biryani',
       price: 350,
       description: 'Fragrant basmati rice cooked with spiced chicken and spicy tangy Andhra mango pickle (Avakaya), served with raita.',
-      image: '/biryani.png',
+      image: 'biryani.png',
       category: 'mains',
       rating: 4.9,
       isVeg: false,
@@ -54,7 +54,7 @@ export class FoodComponent {
       name: 'Butter Chicken & Garlic Naan',
       price: 320,
       description: 'Rich, creamy spiced tomato-butter gravy served with tender tandoori chicken chunks and fresh hot garlic butter naan.',
-      image: '/butter-chicken.png',
+      image: 'butter-chicken.png',
       category: 'mains',
       rating: 4.8,
       isVeg: false,
@@ -65,7 +65,7 @@ export class FoodComponent {
       name: 'Pesarattu Upma Set',
       price: 220,
       description: 'Traditional green gram crepe stuffed with hot ginger semolina upma, served with ginger chutney (Allam Pachadi).',
-      image: '/pesarattu.png',
+      image: 'pesarattu.png',
       category: 'mains',
       rating: 4.8,
       isVeg: true,
@@ -76,7 +76,7 @@ export class FoodComponent {
       name: 'Classic Masala Dosa Set',
       price: 180,
       description: 'Crispy fermented rice and lentil crepe stuffed with tempered potato mash, served with coconut chutney and hot sambar.',
-      image: '/dosa.png',
+      image: 'dosa.png',
       category: 'mains',
       rating: 4.8,
       isVeg: true,
@@ -87,7 +87,7 @@ export class FoodComponent {
       name: 'Tandoori Paneer Tikka',
       price: 280,
       description: 'Grilled cottage cheese cubes, bell peppers, and onions marinated in yogurt and aromatic spices, charred in a tandoor.',
-      image: '/paneer-tikka.png',
+      image: 'paneer-tikka.png',
       category: 'sides',
       rating: 4.7,
       isVeg: true,
@@ -98,7 +98,7 @@ export class FoodComponent {
       name: 'Mango Lassi & Kesari Peda',
       price: 120,
       description: 'A tall glass of sweet, thick mango yogurt lassi served with cardamom saffron milk fudge sweets.',
-      image: '/mango-lassi.png',
+      image: 'mango-lassi.png',
       category: 'desserts',
       rating: 4.9,
       isVeg: true,
@@ -256,7 +256,7 @@ export class FoodComponent {
   protected onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     if (img && !img.src.includes('biryani.png')) {
-      img.src = '/biryani.png';
+      img.src = 'biryani.png';
     }
   }
 

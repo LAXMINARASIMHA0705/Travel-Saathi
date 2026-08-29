@@ -90,7 +90,7 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     id: '1',
     title: 'Tirupati Balaji Temple',
     location: 'Tirumala, Andhra Pradesh, India',
-    image: '/tirupati.png',
+    image: 'tirupati.png',
     rating: 5.0,
     category: 'temples',
     tags: ['Holy Shrine', 'Venkateswara', 'Pilgrimage'],
@@ -134,13 +134,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '28°C', condition: 'Pleasant & Sunny', bestSeason: 'Sep – Mar' },
     mapCoords: { x: 48, y: 70 },
-    gallery: ['/tirupati.png', 'https://images.unsplash.com/photo-1609766857041-ed402ea8069a?auto=format&fit=crop&w=800&q=80']
+    gallery: ['tirupati.png', 'https://images.unsplash.com/photo-1609766857041-ed402ea8069a?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '2',
     title: 'Golden Temple (Harmandir Sahib)',
     location: 'Amritsar, Punjab, India',
-    image: '/goldentemple.png',
+    image: 'goldentemple.png',
     rating: 5.0,
     category: 'temples',
     tags: ['Sikh Heritage', 'Holy Sarovar', 'Langar'],
@@ -182,13 +182,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '22°C', condition: 'Cool Breeze', bestSeason: 'Oct – Mar' },
     mapCoords: { x: 32, y: 24 },
-    gallery: ['/goldentemple.png', 'https://images.unsplash.com/photo-1514222709107-a180c68d72b4?auto=format&fit=crop&w=800&q=80']
+    gallery: ['goldentemple.png', 'https://images.unsplash.com/photo-1514222709107-a180c68d72b4?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '3',
     title: 'Kedarnath & Badrinath Char Dham',
     location: 'Garhwal Himalayas, Uttarakhand, India',
-    image: '/kedarnath.png',
+    image: 'kedarnath.png',
     rating: 4.9,
     category: 'temples',
     tags: ['Himalayan Dham', 'Jyotirlinga', 'Sacred Trek'],
@@ -230,13 +230,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '10°C', condition: 'Chilly Mountain Air', bestSeason: 'May – Oct' },
     mapCoords: { x: 42, y: 22 },
-    gallery: ['/kedarnath.png', 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80']
+    gallery: ['kedarnath.png', 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '4',
     title: 'Madurai Meenakshi Temple',
     location: 'Madurai, Tamil Nadu, India',
-    image: '/madurai.png',
+    image: 'madurai.png',
     rating: 4.9,
     category: 'temples',
     tags: ['Dravidian Marvel', 'Gopurams', 'Historic'],
@@ -279,13 +279,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '31°C', condition: 'Warm & Tropical', bestSeason: 'Oct – Mar' },
     mapCoords: { x: 45, y: 84 },
-    gallery: ['/madurai.png', 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80']
+    gallery: ['madurai.png', 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '5',
     title: 'Varanasi Sacred Ghats & Kashi Vishwanath',
     location: 'Varanasi, Uttar Pradesh, India',
-    image: '/varanasi.png',
+    image: 'varanasi.png',
     rating: 4.7,
     category: 'temples',
     tags: ['Heritage', 'Spiritual', 'Culture'],
@@ -327,13 +327,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '25°C', condition: 'Hazy Sun', bestSeason: 'Nov – Feb' },
     mapCoords: { x: 58, y: 42 },
-    gallery: ['/varanasi.png', 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80']
+    gallery: ['varanasi.png', 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '6',
     title: 'Agra Wonders & Taj Mahal',
     location: 'Agra, Uttar Pradesh, India',
-    image: '/tajmahal.png',
+    image: 'tajmahal.png',
     rating: 4.9,
     category: 'heritage',
     tags: ['Heritage', 'Culture', 'Wonders'],
@@ -376,13 +376,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '24°C', condition: 'Sunny & Clear', bestSeason: 'Oct – Mar' },
     mapCoords: { x: 44, y: 36 },
-    gallery: ['/tajmahal.png', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80']
+    gallery: ['tajmahal.png', 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '7',
     title: 'Munnar Tea Hills',
     location: 'Munnar, Kerala, India',
-    image: '/munnar.png',
+    image: 'munnar.png',
     rating: 4.8,
     category: 'nature',
     tags: ['Nature', 'Mountains', 'Tea Gardens'],
@@ -425,13 +425,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '19°C', condition: 'Misty & Refreshing', bestSeason: 'Sep – May' },
     mapCoords: { x: 42, y: 80 },
-    gallery: ['/munnar.png', 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80']
+    gallery: ['munnar.png', 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '8',
     title: 'Vizag Coastal Hills',
     location: 'Visakhapatnam, Andhra Pradesh, India',
-    image: '/vizag.png',
+    image: 'vizag.png',
     rating: 4.8,
     category: 'nature',
     tags: ['Coastal', 'Nature', 'Heritage'],
@@ -475,13 +475,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '27°C', condition: 'Sunny Ocean Breeze', bestSeason: 'Oct – Mar' },
     mapCoords: { x: 62, y: 60 },
-    gallery: ['/vizag.png', 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=800&q=80']
+    gallery: ['vizag.png', 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '9',
     title: 'Goa Beaches & Heritage',
     location: 'Panaji, Goa, India',
-    image: '/goa.png',
+    image: 'goa.png',
     rating: 4.9,
     category: 'nature',
     tags: ['Beaches', 'Nightlife', 'Portuguese Heritage'],
@@ -523,13 +523,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '29°C', condition: 'Sunny Coastal', bestSeason: 'Nov – Feb' },
     mapCoords: { x: 30, y: 68 },
-    gallery: ['/goa.png', 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80']
+    gallery: ['goa.png', 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '10',
     title: 'Jaipur Pink City Palaces',
     location: 'Jaipur, Rajasthan, India',
-    image: '/jaipur.png',
+    image: 'jaipur.png',
     rating: 4.8,
     category: 'heritage',
     tags: ['Palaces', 'Heritage', 'Forts'],
@@ -571,13 +571,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '26°C', condition: 'Sunny & Warm', bestSeason: 'Oct – Mar' },
     mapCoords: { x: 36, y: 38 },
-    gallery: ['/jaipur.png', 'https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80']
+    gallery: ['jaipur.png', 'https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '11',
     title: 'Leh Ladakh High Passes',
     location: 'Leh, Ladakh, India',
-    image: '/ladakh.png',
+    image: 'ladakh.png',
     rating: 4.9,
     category: 'nature',
     tags: ['Himalayas', 'Adventure', 'High Passes'],
@@ -618,13 +618,13 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '8°C', condition: 'Crisp Alpine Sun', bestSeason: 'May – Sep' },
     mapCoords: { x: 30, y: 15 },
-    gallery: ['/ladakh.png', 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=800&q=80']
+    gallery: ['ladakh.png', 'https://images.unsplash.com/photo-1581793745862-99fde7fa73d2?auto=format&fit=crop&w=800&q=80']
   },
   {
     id: '12',
     title: 'Rishikesh Yoga & Ganga Ghats',
     location: 'Rishikesh, Uttarakhand, India',
-    image: '/rishikesh.png',
+    image: 'rishikesh.png',
     rating: 4.8,
     category: 'temples',
     tags: ['Yoga', 'Rafting', 'Spiritual', 'Ganges'],
@@ -665,7 +665,7 @@ export const INITIAL_DESTINATIONS: Destination[] = [
     },
     weather: { temp: '21°C', condition: 'Breezy & Fresh', bestSeason: 'Sep – Jun' },
     mapCoords: { x: 38, y: 26 },
-    gallery: ['/rishikesh.png', 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80']
+    gallery: ['rishikesh.png', 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80']
   }
 ];
 

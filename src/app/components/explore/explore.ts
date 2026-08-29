@@ -33,7 +33,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   ooty: {
     title: 'Ooty Nilgiri Tea Hills & Toy Train',
     location: 'Ooty, Tamil Nadu, India',
-    image: '/munnar.png',
+    image: 'munnar.png',
     category: 'nature',
     tags: ['Nilgiris', 'Hill Station', 'Toy Train', 'Tea Gardens'],
     description: 'Queen of Hill Stations in the Nilgiri Hills, famous for UNESCO Heritage mountain railways, sprawling tea gardens, and crisp mountain pine air.',
@@ -54,7 +54,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   coorg: {
     title: 'Coorg Coffee Forests & Waterfalls',
     location: 'Kodagu (Coorg), Karnataka, India',
-    image: '/munnar.png',
+    image: 'munnar.png',
     category: 'nature',
     tags: ['Coffee Capital', 'Waterfalls', 'Western Ghats'],
     description: 'Scotland of India nestled in lush Western Ghats coffee plantations, roaring cascades, and Kodava warrior cultural traditions.',
@@ -75,7 +75,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   shimla: {
     title: 'Shimla Colonial Hills & Ridge',
     location: 'Shimla, Himachal Pradesh, India',
-    image: '/kedarnath.png',
+    image: 'kedarnath.png',
     category: 'nature',
     tags: ['Himalayan Capital', 'Colonial', 'Snow Valleys'],
     description: 'Summer capital of British India surrounded by deodar forests, Victorian neo-gothic architecture, and majestic Himalayan views.',
@@ -95,7 +95,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   manali: {
     title: 'Manali Snow Valley & Solang Pass',
     location: 'Manali, Himachal Pradesh, India',
-    image: '/kedarnath.png',
+    image: 'kedarnath.png',
     category: 'nature',
     tags: ['Himalayas', 'Paragliding', 'Snow Peak'],
     description: 'Gateway to high-altitude Himalayan adventures, roaring Beas river rapids, snow sports in Solang Valley, and ancient cedar forests.',
@@ -114,7 +114,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   udaipur: {
     title: 'Udaipur City of Lakes & Palaces',
     location: 'Udaipur, Rajasthan, India',
-    image: '/jaipur.png',
+    image: 'jaipur.png',
     category: 'heritage',
     tags: ['City of Lakes', 'Royal Palaces', 'Romantic'],
     description: 'Venice of the East renowned for majestic marble palaces floating in the serene waters of Lake Pichola and royal Mewar heritage.',
@@ -133,7 +133,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   pondicherry: {
     title: 'Pondicherry French Quarter & Beaches',
     location: 'Puducherry, India',
-    image: '/goa.png',
+    image: 'goa.png',
     category: 'nature',
     tags: ['French Colony', 'Promenade Beach', 'Auroville'],
     description: 'French Riviera of the East with mustard-yellow colonial villas, tranquil Auroville experimental township, and Mediterranean coastal cafes.',
@@ -152,7 +152,7 @@ const INDIA_PLACE_PRESETS: Record<string, PlacePreset> = {
   hampi: {
     title: 'Hampi Vijayanagara UNESCO Ruins',
     location: 'Hampi, Karnataka, India',
-    image: '/madurai.png',
+    image: 'madurai.png',
     category: 'heritage',
     tags: ['UNESCO World Heritage', 'Stone Chariot', 'Ruins'],
     description: 'Surreal landscape of giant granite boulders shielding the ancient 14th-century ruins of the Vijayanagara Empire along the Tungabhadra River.',
@@ -629,7 +629,7 @@ Planned with Travel Saathi 🧭`;
   protected onImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
     if (img && !img.src.includes('munnar.png')) {
-      img.src = '/munnar.png';
+      img.src = 'munnar.png';
     }
   }
 
@@ -731,7 +731,7 @@ Planned with Travel Saathi 🧭`;
         id: newId,
         title: preset.title,
         location: preset.location,
-        image: preset.image || '/goa.png',
+        image: preset.image || 'goa.png',
         rating: 4.9,
         category: preset.category || 'nature',
         tags: preset.tags,
@@ -762,14 +762,14 @@ Planned with Travel Saathi 🧭`;
         },
         weather: preset.weather,
         mapCoords: { x: 50, y: 50 },
-        gallery: [preset.image || '/goa.png']
+        gallery: [preset.image || 'goa.png']
       };
     } else {
       newDest = {
         id: newId,
         title: `${formattedTitle} Explorer Guide`,
         location: `${formattedTitle}, India`,
-        image: '/goa.png',
+        image: 'goa.png',
         rating: 4.9,
         category: 'nature',
         tags: ['All-India Travel', 'Heritage', 'Scenic Spot'],
@@ -807,7 +807,7 @@ Planned with Travel Saathi 🧭`;
         },
         weather: { temp: '25°C', condition: 'Sunny & Pleasant', bestSeason: 'Oct – Mar' },
         mapCoords: { x: 50, y: 50 },
-        gallery: ['/goa.png']
+        gallery: ['goa.png']
       };
     }
 
