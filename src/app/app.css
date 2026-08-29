@@ -216,14 +216,17 @@
 .app-viewport {
   flex: 1;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
 }
 
 .bottom-modules-dock {
-  position: absolute;
-  bottom: 74px;
-  left: 16px;
-  right: 16px;
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  margin: 16px 16px 12px 16px;
   height: 64px;
   display: flex; 
   gap: 10px;
@@ -363,18 +366,19 @@
 }
 
 .app-bottom-nav {
-  position: absolute;
+  position: sticky;
   bottom: 0; left: 0; right: 0;
+  margin-top: auto;
   height: 66px;
-  background: rgba(11, 15, 25, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(11, 15, 25, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--border);
   display: flex; 
   justify-content: space-around;
   align-items: center;
-  padding-bottom: 6px;
-  z-index: 70;
+  padding-bottom: env(safe-area-inset-bottom, 6px);
+  z-index: 90;
 }
 
 .nav-tab-btn {
