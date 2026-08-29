@@ -1,4 +1,4 @@
-﻿.food-drawer-backdrop {
+.food-drawer-backdrop {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(5, 7, 12, 0.65);
@@ -180,6 +180,180 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Search & Dietary Filters Row */
+.food-search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper svg {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+}
+
+.food-search-input {
+  width: 100%;
+  padding: 8px 32px 8px 34px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  transition: var(--transition-smooth);
+}
+
+.food-search-input:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.dietary-filter-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.dietary-filter-chips button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.dietary-filter-chips button.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.prep-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #f4f4f5;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.menu-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diet-dot {
+  font-size: 0.7rem;
+}
+
+.diet-dot.veg {
+  color: #10b981;
+}
+
+.diet-dot.nonveg {
+  color: #ef4444;
+}
+
+.food-no-results {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+/* Promo Coupon Box */
+.promo-box-container {
+  margin: 12px 0;
+  padding: 10px 12px;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px dashed rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.promo-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.promo-input {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #ffffff;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.btn-apply-promo {
+  background: #10b981;
+  color: #000000;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.btn-remove-promo {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid #ef4444;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.promo-success {
+  font-size: 0.72rem;
+  color: #34d399;
+  font-weight: 700;
+}
+
+.promo-err {
+  font-size: 0.72rem;
+  color: #f87171;
+}
+
+.summary-row.discount span {
+  color: #34d399;
+  font-weight: 700;
 }
 
 .menu-footer {

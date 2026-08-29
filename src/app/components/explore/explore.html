@@ -1,13 +1,13 @@
-﻿<div class="explore-container animate-fade-in-up">
+<div class="explore-container animate-fade-in-up">
   <div class="explore-hero-card">
     <div class="hero-top-row">
       <div class="hero-title-group">
         <span class="hero-subtitle">Voyager Experience</span>
-        <h2>Explore Incredible India ðŸ‡®ðŸ‡³</h2>
+        <h2>Explore Incredible India 🇮🇳</h2>
       </div>
       <div class="weather-pill" title="Live Region Weather Forecast">
-        <span class="weather-icon">ðŸŒ¤ï¸</span>
-        <span class="weather-temp">24Â°C</span>
+        <span class="weather-icon">🌤️</span>
+        <span class="weather-temp">24°C</span>
       </div>
     </div>
 
@@ -21,327 +21,586 @@
         (keyup.enter)="addCustomDestination(searchQuery())"
       />
       @if (searchQuery()) {
-        <button class="btn-clear-search" (click)="searchQuery.set('')">âœ•</button>
+        <button class="btn-clear-search" (click)="searchQuery.set('')">✕</button>
       }
     </div>
   </div>
 
-  
+  <!-- Category Filters -->
   <div class="category-filters">
     <button 
       [class.active]="selectedCategory() === 'all'" 
       (click)="setCategory('all')">
-      âœ¨ All
+      ✨ All
     </button>
     <button 
       [class.active]="selectedCategory() === 'temples'" 
       (click)="setCategory('temples')">
-      ðŸ›• Temples
+      🛕 Temples
     </button>
     <button 
       [class.active]="selectedCategory() === 'heritage'" 
       (click)="setCategory('heritage')">
-      ðŸ›ï¸ Heritage
+      🏛️ Heritage
     </button>
     <button 
       [class.active]="selectedCategory() === 'nature'" 
       (click)="setCategory('nature')">
-      ðŸŒ¿ Nature
+      🌿 Nature
     </button>
     <button 
       [class.active]="selectedCategory() === 'saved'" 
       (click)="setCategory('saved')">
-      â¤ï¸ Saved ({{ savedDestinationIds().size }})
+      ❤️ Saved ({{ savedDestinationIds().size }})
     </button>
+
+    <div class="view-checklist-group">
+      <div class="view-toggle-pill">
+        <button [class.active]="viewMode() === 'list'" (click)="viewMode.set('list')">📋 List</button>
+        <button [class.active]="viewMode() === 'map'" (click)="viewMode.set('map')">🗺️ Map</button>
+      </div>
+
+      <button class="btn-checklist-trigger" (click)="isChecklistOpen.set(true)" title="Smart Travel Checklist">
+        🧳 Checklist
+      </button>
+
+      <div class="sort-selector-wrapper">
+        <select 
+          [value]="sortBy()" 
+          (change)="sortBy.set($any($event.target).value)" 
+          class="sort-dropdown" 
+          aria-label="Sort Destinations">
+          <option value="default">↕️ Default</option>
+          <option value="rating">⭐ Highest Rated</option>
+          <option value="name">🔤 Name (A-Z)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  
-  <div class="destinations-list">
-    @for (dest of filteredDestinations(); track dest.id) {
-      <div 
-        class="destination-card" 
-        [class.expanded]="expandedDestinationId() === dest.id"
-      >
-        <div class="card-image-wrapper" (click)="toggleExpand(dest.id)">
-          <img [src]="dest.image" [alt]="dest.title" class="card-image" />
-          
-          
-          <div class="card-top-actions">
-            <button 
-              class="btn-card-action btn-fav" 
-              [class.is-fav]="isFavorite(dest.id)" 
-              (click)="toggleFavorite(dest.id, $event)"
-              title="Bookmark / Save Destination">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" [attr.fill]="isFavorite(dest.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            </button>
-            <button 
-              class="btn-card-action btn-zoom" 
-              (click)="openLightbox(dest.image, dest.title, dest.location, $event)"
-              title="View Full Resolution Photo">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
-            </button>
-          </div>
+  <!-- Region Filters Bar -->
+  <div class="region-filters">
+    <span class="region-label">🇮🇳 Region:</span>
+    <button [class.active]="selectedRegion() === 'all'" (click)="setRegion('all')">✨ All India</button>
+    <button [class.active]="selectedRegion() === 'North'" (click)="setRegion('North')">🏔️ North</button>
+    <button [class.active]="selectedRegion() === 'South'" (click)="setRegion('South')">🏖️ South</button>
+    <button [class.active]="selectedRegion() === 'West'" (click)="setRegion('West')">🏛️ West</button>
+    <button [class.active]="selectedRegion() === 'East'" (click)="setRegion('East')">🍵 East</button>
+    <button [class.active]="selectedRegion() === 'North-East'" (click)="setRegion('North-East')">🌿 North-East</button>
+  </div>
 
-          <div class="card-overlay">
-            <span class="location-badge">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              {{ dest.location }}
-            </span>
-            <div class="overlay-badges">
-              @if (dest.category === 'temples') {
-                <span class="cat-pill temple-cat-pill">ðŸ›• Temple</span>
-              } @else if (dest.category === 'heritage') {
-                <span class="cat-pill heritage-cat-pill">ðŸ›ï¸ Heritage</span>
-              } @else {
-                <span class="cat-pill nature-cat-pill">ðŸŒ¿ Nature</span>
-              }
-              <span class="rating-badge">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="icon-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                {{ dest.rating }}
-              </span>
+  @if (copyToast()) {
+    <div class="copy-toast-banner animate-fade-in-up">
+      {{ copyToast() }}
+    </div>
+  }
+
+  <!-- LIST VIEW VS MAP VIEW -->
+  @if (viewMode() === 'map') {
+    <div class="map-view-canvas animate-fade-in">
+      <div class="map-header">
+        <h3>🗺️ Interactive India Destination Map</h3>
+        <p>Click any glowing pin to inspect details & plan your route</p>
+      </div>
+
+      <div class="india-map-container">
+        <svg viewBox="0 0 100 100" class="svg-map-outline">
+          <path d="M 30,10 Q 40,5 50,15 T 70,30 T 65,55 T 45,90 T 35,70 T 25,45 Z" fill="rgba(30, 41, 59, 0.4)" stroke="rgba(99, 102, 241, 0.3)" stroke-width="0.8" />
+        </svg>
+
+        @for (dest of filteredDestinations(); track dest.id) {
+          <div 
+            class="map-pin" 
+            [style.left.%]="dest.mapCoords.x" 
+            [style.top.%]="dest.mapCoords.y"
+            (click)="toggleExpand(dest.id); viewMode.set('list')"
+            [title]="dest.title + ' • ' + dest.location">
+            <div class="pin-pulse"></div>
+            <div class="pin-icon">📍</div>
+            <div class="pin-tooltip">
+              <strong>{{ dest.title }}</strong>
+              <span>⭐ {{ dest.rating }} • {{ dest.weather?.temp }}</span>
             </div>
           </div>
-        </div>
-
-        <div class="card-content">
-          <div class="card-header" (click)="toggleExpand(dest.id)">
-            <h3 class="card-title">{{ dest.title }}</h3>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </div>
-
-          <div class="tag-list">
-            @for (tag of dest.tags; track tag) {
-              <span class="tag-chip">#{{ tag }}</span>
-            }
-          </div>
-
-          <p class="description">{{ dest.description }}</p>
-
-          
-          @if (expandedDestinationId() === dest.id) {
-            <div class="expanded-details animate-fade-in-up">
-              <div class="divider"></div>
-              
-              <div class="section-title">Must-Visit Spots</div>
-              <ul class="spots-list">
-                @for (spot of dest.spots; track spot) {
-                  <li>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spot-bullet"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    {{ spot }}
-                  </li>
-                }
-              </ul>
-
-              
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="destinations-list">
+      @for (dest of filteredDestinations(); track dest.id) {
+        <div 
+          class="destination-card" 
+          [class.expanded]="expandedDestinationId() === dest.id"
+        >
+          <div class="card-image-wrapper" (click)="toggleExpand(dest.id)">
+            <img [src]="dest.image" [alt]="dest.title" class="card-image" loading="lazy" (error)="onImageError($event)" />
+            
+            <div class="card-top-actions">
               <button 
-                class="btn-optimizer-trigger" 
-                [class.active]="activeOptimizerDestId() === dest.id"
-                (click)="toggleOptimizer(dest.id)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="opt-icon"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
-                {{ activeOptimizerDestId() === dest.id ? 'Hide Nearby Route Optimizer' : 'Optimize Nearby Route (Cover All Spots)' }}
+                class="btn-card-action btn-fav" 
+                [class.is-fav]="isFavorite(dest.id)" 
+                (click)="toggleFavorite(dest.id, $event)"
+                title="Bookmark / Save Destination">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" [attr.fill]="isFavorite(dest.id) ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
               </button>
+              <button 
+                class="btn-card-action btn-gallery" 
+                (click)="openGallery(dest, $event)"
+                title="View Destination Photo Gallery">
+                📸 Gallery
+              </button>
+              <button 
+                class="btn-card-action btn-share" 
+                (click)="shareTripPlan(dest, $event)"
+                title="Share / Copy Trip Plan">
+                📤 Share
+              </button>
+              <button 
+                class="btn-card-action btn-zoom" 
+                (click)="openLightbox(dest.image, dest.title, dest.location, $event)"
+                title="View Full Resolution Photo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              </button>
+            </div>
 
-              @if (activeOptimizerDestId() === dest.id) {
-                <div class="optimizer-panel animate-fade-in-up">
-                  <div class="optimizer-meta-card">
-                    <div class="meta-row">
-                      <span class="meta-label">Optimal Transit:</span>
-                      <span class="meta-val highlight-green">{{ dest.pathOptimizer.recommendedLocalMode }}</span>
+            <div class="card-overlay">
+              <div class="location-weather-group">
+                <span class="location-badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-pin"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  {{ dest.location }}
+                </span>
+                @if (dest.weather) {
+                  <span class="weather-card-pill" title="Live Condition & Best Season">
+                    {{ getWeatherIcon(dest.weather) }} {{ dest.weather.temp }} • {{ dest.weather.condition }}
+                  </span>
+                }
+              </div>
+
+              <div class="overlay-badges">
+                @if (dest.category === 'temples') {
+                  <span class="cat-pill temple-cat-pill">🛕 Temple</span>
+                } @else if (dest.category === 'heritage') {
+                  <span class="cat-pill heritage-cat-pill">🏛️ Heritage</span>
+                } @else {
+                  <span class="cat-pill nature-cat-pill">🌿 Nature</span>
+                }
+                <span class="rating-badge">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="icon-star"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  {{ dest.rating }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <div class="card-header" (click)="toggleExpand(dest.id)">
+              <h3 class="card-title">{{ dest.title }}</h3>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+
+            <div class="tag-list">
+              @for (tag of dest.tags; track tag) {
+                <span class="tag-chip">#{{ tag }}</span>
+              }
+            </div>
+
+            <p class="description">{{ dest.description }}</p>
+
+            @if (expandedDestinationId() === dest.id) {
+              <div class="expanded-details animate-fade-in-up">
+                <div class="divider"></div>
+                
+                <!-- TOP HIGHLIGHTED TOURIST SPOTS -->
+                @if (dest.localAttractions && dest.localAttractions.length > 0) {
+                  <div class="local-attractions-section">
+                    <div class="section-header-title">
+                      <h4>📍 Top Tourist Places & Local Spots to Visit</h4>
+                      <p>Must-see heritage sites, temples, waterfalls & natural viewpoints</p>
                     </div>
-                    <p class="meta-explanation">{{ dest.pathOptimizer.modeExplanation }}</p>
-                    <div class="meta-grid">
-                      <div class="grid-item">
-                        <span class="grid-lbl">Time Required</span>
-                        <span class="grid-val">{{ dest.pathOptimizer.estimatedDuration }}</span>
+
+                    <div class="attractions-grid">
+                      @for (place of dest.localAttractions; track place.name) {
+                        <div class="attraction-card">
+                          <div class="attraction-top">
+                            <strong class="attraction-name">📍 {{ place.name }}</strong>
+                            <div class="attraction-actions">
+                              <span class="attraction-type-badge">{{ place.type }}</span>
+                              <button class="btn-spot-map" (click)="openMapsDirections(place.name, dest.location, $event)" title="Open Directions in Google Maps">
+                                🧭 Maps
+                              </button>
+                            </div>
+                          </div>
+                          <p class="attraction-desc">{{ place.desc }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                } @else {
+                  <div class="section-title">Must-Visit Spots</div>
+                  <ul class="spots-list">
+                    @for (spot of dest.spots; track spot) {
+                      <li>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        {{ spot }}
+                      </li>
+                    }
+                  </ul>
+                }
+
+                <!-- MUST-TRY LOCAL DISHES & DELICACIES -->
+                @if (dest.mustTryDishes && dest.mustTryDishes.length > 0) {
+                  <div class="local-dishes-section">
+                    <div class="section-header-title">
+                      <h4>🍛 Must-Try Local Dishes & Delicacies</h4>
+                      <p>Iconic regional street foods, sweets, and thalis you cannot miss</p>
+                    </div>
+
+                    <div class="dishes-grid">
+                      @for (dish of dest.mustTryDishes; track dish.name) {
+                        <div class="dish-card">
+                          <div class="dish-top-row">
+                            <div class="dish-title-group">
+                              <span class="dish-emoji">{{ dish.imageEmoji || '🍲' }}</span>
+                              <strong class="dish-name">{{ dish.name }}</strong>
+                            </div>
+                            <span class="diet-badge" [class.veg]="dish.veg" [class.nonveg]="!dish.veg">
+                              {{ dish.veg ? '🟢 VEG' : '🔴 NON-VEG' }}
+                            </span>
+                          </div>
+                          <p class="dish-desc">{{ dish.desc }}</p>
+                          @if (dish.famousAt) {
+                            <div class="dish-famous-at">
+                              <span class="label">⭐ Famous Spot:</span>
+                              <span class="location-name">{{ dish.famousAt }}</span>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- ACCURATE LIVE WEATHER & CLIMATE FORECAST WIDGET -->
+                @if (dest.weather) {
+                  <div class="weather-climate-section">
+                    <div class="weather-climate-header">
+                      <div class="weather-title-group">
+                        <span class="weather-badge-icon dynamic-weather-symbol">{{ getWeatherIcon(dest.weather) }}</span>
+                        <div>
+                          <h4>Accurate Live Weather & Climate Advisory</h4>
+                          <span class="weather-data-tag" [class.live]="dest.weather.liveFetched">
+                            {{ dest.weather.liveFetched ? '🔴 Live Meteorological Stream (Open-Meteo)' : '📊 Climate Norms & Seasonal Data' }}
+                          </span>
+                        </div>
                       </div>
-                      <div class="grid-item">
-                        <span class="grid-lbl">Local Budget</span>
-                        <span class="grid-val">{{ dest.pathOptimizer.estimatedCost }}</span>
+                      <div class="weather-right-temp">
+                        <span class="temp-big">{{ dest.weather.temp }}</span>
+                        <span class="cond-text">{{ dest.weather.condition }}</span>
+                      </div>
+                    </div>
+
+                    <div class="weather-details-grid">
+                      <div class="weather-stat-card">
+                        <span class="stat-label">📅 Best Season to Visit</span>
+                        <strong class="stat-value season-highlight">{{ dest.weather.bestSeason }}</strong>
+                      </div>
+
+                      @if (dest.weather.climateType) {
+                        <div class="weather-stat-card">
+                          <span class="stat-label">🌍 Climate Zone</span>
+                          <strong class="stat-value climate-highlight">{{ dest.weather.climateType }}</strong>
+                        </div>
+                      }
+
+                      @if (dest.weather.windSpeed) {
+                        <div class="weather-stat-card">
+                          <span class="stat-label">💨 Wind Velocity</span>
+                          <strong class="stat-value wind-highlight">{{ dest.weather.windSpeed }}</strong>
+                        </div>
+                      }
+                    </div>
+
+                    @if (dest.weather.clothingTip) {
+                      <div class="clothing-tip-banner">
+                        <span class="tip-icon">🧳</span>
+                        <div class="tip-text">
+                          <strong>Packing & Clothing Advisory:</strong>
+                          <p>{{ dest.weather.clothingTip }}</p>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+
+                <!-- INTERACTIVE TRIP BUDGET ESTIMATOR -->
+                <div class="budget-estimator-section">
+                  <div class="budget-header">
+                    <div class="budget-title-group">
+                      <span class="budget-badge-icon">💰</span>
+                      <div>
+                        <h4>Interactive Trip Budget & Cost Estimator</h4>
+                        <p>Customize travel style, days & group size to compute estimated budget</p>
                       </div>
                     </div>
                   </div>
 
-                  
-                  <div class="stepper-timeline">
-                    @for (step of dest.pathOptimizer.optimizedSequence; track step.spot; let idx = $index) {
-                      <div class="stepper-node">
-                        <div class="stepper-badge-col">
-                          <div class="stepper-number">{{ idx + 1 }}</div>
-                          @if (idx < dest.pathOptimizer.optimizedSequence.length - 1) {
-                            <div class="stepper-line"></div>
-                          }
+                  <div class="budget-controls-grid">
+                    <div class="budget-control-item">
+                      <label>⏱️ Trip Duration:</label>
+                      <div class="pill-selector">
+                        <button [class.active]="budgetDays() === 1" (click)="budgetDays.set(1)">1 Day</button>
+                        <button [class.active]="budgetDays() === 3" (click)="budgetDays.set(3)">3 Days</button>
+                        <button [class.active]="budgetDays() === 5" (click)="budgetDays.set(5)">5 Days</button>
+                        <button [class.active]="budgetDays() === 7" (click)="budgetDays.set(7)">7 Days</button>
+                      </div>
+                    </div>
+
+                    <div class="budget-control-item">
+                      <label>🎒 Travel Style:</label>
+                      <div class="pill-selector">
+                        <button [class.active]="budgetTier() === 'backpacker'" (click)="budgetTier.set('backpacker')">🎒 Backpacker</button>
+                        <button [class.active]="budgetTier() === 'comfort'" (click)="budgetTier.set('comfort')">🚗 Comfort</button>
+                        <button [class.active]="budgetTier() === 'luxury'" (click)="budgetTier.set('luxury')">🏨 Luxury</button>
+                      </div>
+                    </div>
+
+                    <div class="budget-control-item">
+                      <label>👥 Travellers:</label>
+                      <div class="pill-selector">
+                        <button [class.active]="budgetGroupSize() === 1" (click)="budgetGroupSize.set(1)">Solo (1)</button>
+                        <button [class.active]="budgetGroupSize() === 2" (click)="budgetGroupSize.set(2)">Couple (2)</button>
+                        <button [class.active]="budgetGroupSize() === 4" (click)="budgetGroupSize.set(4)">Family (4)</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  @let est = calculateTripEstimate(budgetTier(), budgetDays(), budgetGroupSize());
+                  <div class="budget-breakdown-card">
+                    <div class="breakdown-col">
+                      <span class="lbl">🏨 Hotel & Stay</span>
+                      <span class="val">₹{{ est.stayCost.toLocaleString('en-IN') }}</span>
+                    </div>
+                    <div class="breakdown-col">
+                      <span class="lbl">🍛 Food & Meals</span>
+                      <span class="val">₹{{ est.foodCost.toLocaleString('en-IN') }}</span>
+                    </div>
+                    <div class="breakdown-col">
+                      <span class="lbl">🚕 Local Transit</span>
+                      <span class="val">₹{{ est.transitCost.toLocaleString('en-IN') }}</span>
+                    </div>
+                    <div class="breakdown-col total-col">
+                      <span class="lbl">Est. Total Trip Cost</span>
+                      <span class="val-total">₹{{ est.total.toLocaleString('en-IN') }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ROUTE OPTIMIZER & BEST TRANSIT -->
+                <div class="route-planner-section">
+                  <div class="route-planner-header">
+                    <h4>🗺️ Transit & Route Planner</h4>
+                    <p>Select your starting city to compare Train, Flight, Bus & Cab options</p>
+                  </div>
+
+                  <div class="city-selector-row">
+                    <button [class.active]="getStartCity(dest.id) === 'delhi'" (click)="setStartCity(dest.id, 'delhi')">✈️ From Delhi</button>
+                    <button [class.active]="getStartCity(dest.id) === 'mumbai'" (click)="setStartCity(dest.id, 'mumbai')">🚉 From Mumbai</button>
+                    <button [class.active]="getStartCity(dest.id) === 'bengaluru'" (click)="setStartCity(dest.id, 'bengaluru')">🚌 From Bengaluru</button>
+                  </div>
+
+                  <div class="transport-options-list">
+                    @for (option of getTransportOptions(dest.id, getStartCity(dest.id)); track option.name) {
+                      <div class="transport-card" [class.recommended-best]="option.best">
+                        <div class="transport-icon-wrapper">
+                          @if (option.mode === 'train') { 🚆 }
+                          @else if (option.mode === 'flight') { ✈️ }
+                          @else if (option.mode === 'bus') { 🚌 }
+                          @else { 🚗 }
                         </div>
-                        <div class="stepper-content-col">
-                          <div class="stepper-header">
-                            <span class="stepper-spot-name">{{ step.spot }}</span>
-                            <span class="stepper-time">{{ step.timeOfDay }}</span>
+                        <div class="transport-details">
+                          <div class="transport-title-row">
+                            <span class="transport-name">{{ option.name }}</span>
+                            @if (option.best) {
+                              <span class="best-badge">✨ SAATHI CHOICE</span>
+                            }
                           </div>
-                          <p class="stepper-tip">{{ step.tip }}</p>
+                          <p class="transport-tip">{{ option.tip }}</p>
+                        </div>
+                        <div class="transport-pricing">
+                          <span class="transport-cost">₹{{ option.cost }}</span>
+                          <span class="transport-duration">⏱️ {{ option.duration }}</span>
                         </div>
                       </div>
                     }
                   </div>
                 </div>
-              }
 
-              
-              <div class="divider"></div>
-              
-              @if (activeRouteDestId() !== dest.id) {
-                <button class="btn-route-trigger" (click)="openRoutePlanner(dest.id)">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="route-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-                  Get Route & Transport Guidance
-                </button>
-              } @else {
-                <div class="route-planner-panel animate-fade-in-up">
-                  <div class="route-panel-header">
-                    <span class="route-panel-title">Route Guidance</span>
-                    <button class="btn-close-route" (click)="resetRoutePlanner()">Cancel</button>
-                  </div>
-
-                  
-                  <div class="route-input-group">
-                    <input 
-                      #cityInput
-                      type="text" 
-                      placeholder="Enter starting city (e.g. Delhi, Mumbai)"
-                      (keyup.enter)="submitCustomCity(cityInput.value)"
-                    />
-                    <button class="btn-submit-city" (click)="submitCustomCity(cityInput.value)">Go</button>
-                  </div>
-
-                  
-                  <div class="quick-city-chips">
-                    <button [class.selected]="selectedStartCity() === 'Delhi'" (click)="selectQuickCity('Delhi')">Delhi</button>
-                    <button [class.selected]="selectedStartCity() === 'Mumbai'" (click)="selectQuickCity('Mumbai')">Mumbai</button>
-                    <button [class.selected]="selectedStartCity() === 'Bengaluru'" (click)="selectQuickCity('Bengaluru')">Bengaluru</button>
-                    <button [class.selected]="selectedStartCity() === 'Kochi'" (click)="selectQuickCity('Kochi')">Kochi</button>
-                  </div>
-
-                  
-                  @if (selectedStartCity()) {
-                    <div class="route-results-container animate-fade-in-up">
-                      <div class="results-header-text">
-                        From <strong>{{ selectedStartCity() }}</strong> to <strong>{{ dest.title }}</strong>:
+                <!-- NEARBY ROUTE OPTIMIZER -->
+                @if (dest.pathOptimizer) {
+                  <div class="path-optimizer-section">
+                    <div class="optimizer-header" (click)="toggleOptimizer(dest.id)">
+                      <div class="optimizer-title-group">
+                        <span class="opt-badge">🧭 SMART OPTIMIZER</span>
+                        <h4>Best Spot Sequence & Transit Tips</h4>
                       </div>
+                      <span class="opt-toggle-btn">{{ activeOptimizerDestId() === dest.id ? 'Hide Sequence ▲' : 'View Best Sequence ▼' }}</span>
+                    </div>
 
-                      <div class="transit-options-list">
-                        @for (opt of transitGuidance(); track opt.name) {
-                          <div class="transit-card" [class.best-recommendation]="opt.best">
-                            @if (opt.best) {
-                              <span class="best-badge">BEST CHOICE</span>
-                            }
-                            <div class="transit-card-header">
-                              <div class="transit-icon-wrapper">
-                                @if (opt.mode === 'train') {
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="16" height="16" rx="2"></rect><path d="M4 11h16M12 3v8M8 19l-2 3M16 19l2 3M8 15h8"></path></svg>
-                                } @else if (opt.mode === 'flight') {
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-2-2h-3.5L10.8 1.8A1 1 0 0 0 10 1v5.2L6 8.5V7a1 1 0 0 0-2 0v2.5L2 10.2v1.5l2-.7V15a1 1 0 0 0 2 0v-4.5l4-2.7V23h2v-8h3l3 2.5a1 1 0 0 0 1.5-.8V16z"></path></svg>
-                                } @else if (opt.mode === 'bus') {
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="16" height="15" rx="2"></rect><circle cx="7.5" cy="21.5" r="1.5"></circle><circle cx="16.5" cy="21.5" r="1.5"></circle><path d="M4 8h16M4 13h16M8 3v5M16 3v5"></path></svg>
-                                } @else {
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                                }
-                              </div>
-                              <div class="transit-info-text">
-                                <h5>{{ opt.name }}</h5>
-                                <div class="transit-meta">
-                                  <span class="transit-duration">{{ opt.duration }}</span>
-                                  <span class="transit-divider">â€¢</span>
-                                  <span class="transit-cost">Est. Cost: â‚¹{{ (opt.cost * 83).toFixed(0) }}</span>
+                    @if (activeOptimizerDestId() === dest.id) {
+                      <div class="optimizer-body animate-fade-in">
+                        <div class="opt-summary-row">
+                          <div class="opt-summary-card">
+                            <span class="label">Recommended Transport</span>
+                            <span class="val">🛺 {{ dest.pathOptimizer.recommendedLocalMode }}</span>
+                          </div>
+                          <div class="opt-summary-card">
+                            <span class="label">Est. Time Needed</span>
+                            <span class="val">⏱️ {{ dest.pathOptimizer.estimatedDuration }}</span>
+                          </div>
+                          <div class="opt-summary-card">
+                            <span class="label">Est. Transit Cost</span>
+                            <span class="val">💰 {{ dest.pathOptimizer.estimatedCost }}</span>
+                          </div>
+                        </div>
+
+                        <div class="opt-timeline">
+                          @for (step of dest.pathOptimizer.optimizedSequence; track step.spot; let idx = $index) {
+                            <div class="timeline-step">
+                              <div class="step-badge">{{ idx + 1 }}</div>
+                              <div class="step-content">
+                                <div class="step-top-row">
+                                  <strong>{{ step.spot }}</strong>
+                                  <span class="step-time">{{ step.timeOfDay }}</span>
                                 </div>
+                                <p class="step-tip">💡 {{ step.tip }}</p>
                               </div>
                             </div>
-                            <p class="transit-tip">{{ opt.tip }}</p>
-                          </div>
-                        }
-                      </div>
-                    </div>
-                  }
-                </div>
-              }
-
-              <div class="divider"></div>
-
-              <div class="section-title">Your Itinerary Plan</div>
-              <div class="itinerary-list">
-                @for (item of dest.itinerary; track item.day) {
-                  <div class="itinerary-item" [class.completed]="item.done" (click)="toggleItineraryItem(dest.id, item.day)">
-                    <div class="checkbox-wrapper">
-                      <div class="custom-checkbox">
-                        @if (item.done) {
-                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        }
-                      </div>
-                    </div>
-                    <div class="itinerary-text">
-                      <div class="itinerary-header">
-                        <span class="day-badge">Day {{ item.day }}</span>
-                        <span class="itinerary-title">{{ item.title }}</span>
-                      </div>
-                      <p class="itinerary-desc">{{ item.desc }}</p>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              
-              <div class="divider"></div>
-              
-              <div class="phrase-header-row">
-                <div class="section-title">Local Phrase Guide</div>
-                <div class="speed-toggle-group">
-                  <span class="speed-label">Speed:</span>
-                  <button class="btn-speed-pill" [class.active]="playbackSpeed() === 1.0" (click)="setSpeed(1.0)">1.0x</button>
-                  <button class="btn-speed-pill" [class.active]="playbackSpeed() === 0.75" (click)="setSpeed(0.75)">0.75x Slow-Mo</button>
-                </div>
-              </div>
-
-              <div class="phrase-list">
-                @for (phrase of dest.phrases; track phrase.original) {
-                  <div class="phrase-card" [class.glowing-sound]="activePhraseId() === (dest.id + '_' + phrase.original)">
-                    <div class="phrase-details">
-                      <span class="phrase-original">{{ phrase.original }}</span>
-                      <span class="phrase-pronounce">"{{ phrase.pronounce }}"</span>
-                      <span class="phrase-meaning">{{ phrase.meaning }}</span>
-                    </div>
-                    <button class="btn-play-phrase" (click)="playPhraseAudio(dest.id, phrase)" title="Listen Pronunciation">
-                      @if (activePhraseId() === (dest.id + '_' + phrase.original)) {
-                        <div class="phrase-visualizer">
-                          <div class="phrase-bar"></div>
-                          <div class="phrase-bar"></div>
-                          <div class="phrase-bar"></div>
+                          }
                         </div>
-                      } @else {
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                      }
-                    </button>
+                      </div>
+                    }
                   </div>
                 }
+
+                <!-- ITINERARY CHECKLIST -->
+                <div class="itinerary-section">
+                  <h4>Recommended Itinerary:</h4>
+                  <div class="itinerary-list">
+                    @for (item of dest.itinerary; track item.day) {
+                      <div class="itinerary-item" [class.completed]="item.done" (click)="toggleItineraryItem(dest.id, item.day)">
+                        <div class="itinerary-left">
+                          <input type="checkbox" [checked]="item.done" (change)="toggleItineraryItem(dest.id, item.day)" (click)="$event.stopPropagation()" />
+                          <div>
+                            <span class="day-label">Day {{ item.day }}: {{ item.title }}</span>
+                            <p class="day-desc">{{ item.desc }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- LOCAL PHRASES GUIDE -->
+                <div class="phrases-section">
+                  <div class="phrases-header">
+                    <h4>🗣️ Useful Local Expressions</h4>
+                  </div>
+
+                  <div class="phrases-grid">
+                    @for (phrase of dest.phrases; track phrase.original) {
+                      <div class="phrase-card" [class.glowing-sound]="activePhraseId() === (dest.id + '_' + phrase.original)">
+                        <div class="phrase-details">
+                          <span class="phrase-original">{{ phrase.original }}</span>
+                          <span class="phrase-pronounce">"{{ phrase.pronounce }}"</span>
+                          <span class="phrase-meaning">{{ phrase.meaning }}</span>
+                        </div>
+                        <button class="btn-play-phrase" (click)="playPhraseAudio(dest.id, phrase)" title="Listen Pronunciation">
+                          @if (activePhraseId() === (dest.id + '_' + phrase.original)) {
+                            <div class="phrase-visualizer">
+                              <div class="phrase-bar"></div>
+                              <div class="phrase-bar"></div>
+                              <div class="phrase-bar"></div>
+                            </div>
+                          } @else {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                          }
+                        </button>
+                      </div>
+                    }
+                  </div>
+                </div>
               </div>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state animate-fade-in-up">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <p>No exact match found for "{{ searchQuery() }}" in default list.</p>
+          
+          @if (searchQuery().trim()) {
+            <button class="btn-generate-dest pulse-glow" (click)="addCustomDestination(searchQuery())">
+              ✨ Instant Generate Travel Companion Guide for "{{ searchQuery() }}"
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- PHOTO GALLERY LIGHTBOX MODAL -->
+  @if (isGalleryOpen() && activeGallery()) {
+    <div class="gallery-modal-backdrop animate-fade-in" (click)="closeGallery()">
+      <div class="gallery-modal-content animate-scale-up" (click)="$event.stopPropagation()">
+        <button class="btn-close-gallery" (click)="closeGallery()">✕</button>
+
+        <div class="gallery-header">
+          <h3>{{ activeGallery()?.title }}</h3>
+          <span>Image {{ (activeGallery()?.currentIndex || 0) + 1 }} of {{ activeGallery()?.images?.length }}</span>
+        </div>
+
+        <div class="gallery-stage">
+          <button class="btn-gallery-nav prev" (click)="prevGalleryImage($event)">❮</button>
+          <img [src]="activeGallery()?.images?.[activeGallery()?.currentIndex || 0]" [alt]="activeGallery()?.title" class="gallery-active-img" />
+          <button class="btn-gallery-nav next" (click)="nextGalleryImage($event)">❯</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- SMART PACKING CHECKLIST MODAL -->
+  @if (isChecklistOpen()) {
+    <div class="checklist-modal-backdrop animate-fade-in" (click)="isChecklistOpen.set(false)">
+      <div class="checklist-modal-content animate-scale-up" (click)="$event.stopPropagation()">
+        <div class="checklist-header">
+          <div class="checklist-title-group">
+            <span class="checklist-icon">🧳</span>
+            <div>
+              <h3>Smart Indian Travel Packing List</h3>
+              <p>Essential gear & temple dress codes for hassle-free travel</p>
+            </div>
+          </div>
+          <button class="btn-close-checklist" (click)="isChecklistOpen.set(false)">✕</button>
+        </div>
+
+        <div class="checklist-body">
+          @for (item of checklistItems(); track item.id) {
+            <div class="checklist-item-row" [class.checked]="item.checked" (click)="toggleChecklistItem(item.id)">
+              <input type="checkbox" [checked]="item.checked" (change)="toggleChecklistItem(item.id)" (click)="$event.stopPropagation()" />
+              <span class="checklist-text">{{ item.text }}</span>
+              <span class="checklist-cat-tag" [class]="item.category.toLowerCase()">{{ item.category }}</span>
             </div>
           }
         </div>
       </div>
-    } @empty {
-      <div class="empty-state animate-fade-in-up">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <p>No exact match found for "{{ searchQuery() }}" in default list.</p>
-        
-        @if (searchQuery().trim()) {
-          <button class="btn-generate-dest pulse-glow" (click)="addCustomDestination(searchQuery())">
-            âœ¨ Instant Generate Travel Companion Guide for "{{ searchQuery() }}"
-          </button>
-        }
-      </div>
-    }
-  </div>
+    </div>
+  }
 
-  
+  <!-- ORIGINAL LIGHTBOX MODAL -->
   @if (lightboxImage()) {
     <div class="lightbox-backdrop animate-fade-in-up" (click)="closeLightbox()">
       <div class="lightbox-panel" (click)="$event.stopPropagation()">
-        <button class="btn-close-lightbox" (click)="closeLightbox()">âœ•</button>
+        <button class="btn-close-lightbox" (click)="closeLightbox()">✕</button>
         <img [src]="lightboxImage()?.url" [alt]="lightboxImage()?.title" class="lightbox-img" />
         <div class="lightbox-caption">
           <h4>{{ lightboxImage()?.title }}</h4>
@@ -351,4 +610,3 @@
     </div>
   }
 </div>
-

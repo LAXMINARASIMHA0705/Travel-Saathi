@@ -1,21 +1,20 @@
-﻿<div class="phone-frame animate-fade-in-up">
-  
-  <div class="phone-status-bar">
-    <div class="status-time">20:35</div>
-    <div class="status-notch"></div>
-    <div class="status-icons">
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="16" width="3" height="5" rx="1"></rect><rect x="7" y="12" width="3" height="9" rx="1"></rect><rect x="12" y="8" width="3" height="13" rx="1"></rect><rect x="17" y="3" width="3" height="18" rx="1"></rect></svg>
-      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20" stroke-width="3"></line></svg>
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect><line x1="22" y1="11" x2="22" y2="13"></line><line x1="5" y1="11" x2="13" y2="11" stroke-width="4"></line></svg>
-    </div>
-  </div>
-
+<div class="app-container animate-fade-in-up">
   
   <header class="app-header">
     <div class="header-left">
-      <span class="logo-text">VOYAGER</span>
+      <span class="logo-icon">🧭</span>
+      <span class="logo-text">TRAVEL SAATHI</span>
     </div> 
     <div class="header-right">
+      @if (authService.currentUser()) {
+        <button class="user-pill-btn" (click)="isProfileDrawerOpen.set(true)">
+          <span class="user-name-badge">👤 {{ authService.currentUser()?.name }}</span>
+        </button>
+      } @else {
+        <button class="btn-header-login" (click)="authService.openModal()">
+          🔑 Sign In
+        </button>
+      }
       <button class="icon-btn-header" (click)="isProfileDrawerOpen.set(true)">
         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Avatar" class="avatar-img" />
       </button>
@@ -36,7 +35,7 @@
         @if (aiService.isAiListening()) {
           <span class="speaking-wave">Listening...</span>
         } @else {
-          ðŸŽ™ï¸ Professional travel advisor â€¢ tap to activate voice help
+          🎙️ Professional travel advisor • tap to activate voice help
         }
       </p>
     </div>
@@ -200,21 +199,6 @@
                 <p class="msg-text-content" [innerHTML]="aiService.formatMarkdownText(msg.text)"></p>
 
                 
-                @if (msg.actionType === 'music' && msg.actionData) {
-                  <div class="ai-action-card music-card animate-fade-in-up">
-                    <img [src]="msg.actionData.image" [alt]="'Album artwork for ' + msg.actionData.title" class="card-art" />
-                    <div class="card-info">
-                      <span class="card-title">{{ msg.actionData.title }}</span>
-                      <span class="card-sub">{{ msg.actionData.artist }}</span>
-                    </div>
-                    <button class="btn-card-action play-btn" (click)="playTrackFromAi(msg.actionData.trackId)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                      Play Track
-                    </button>
-                  </div>
-                }
-
-                
                 @if (msg.actionType === 'food' && msg.actionData) {
                   <div class="ai-action-card food-card animate-fade-in-up">
                     <div class="card-info">
@@ -328,13 +312,14 @@
           } @else if (aiService.aiPersona() === 'translator') {
             <button class="chip-btn" (click)="sendChatMessage('Translate Telugu phrases')" aria-label="Suggest Translate Telugu phrases">ðŸ—£ï¸ Telugu Phrases</button>
             <button class="chip-btn" (click)="sendChatMessage('Translate Hindi phrases')" aria-label="Suggest Translate Hindi phrases">ðŸ—£ï¸ Hindi Phrases</button>
-            <button class="chip-btn" (click)="sendChatMessage('How to ask price')" aria-label="Suggest How to ask price">ðŸ’° Asking Price</button>
+            <button class="chip-btn" (click)="sendChatMessage('Translate Telugu phrases')" aria-label="Suggest Translate Telugu phrases">🗣️ Telugu Phrases</button>
+            <button class="chip-btn" (click)="sendChatMessage('Translate Hindi phrases')" aria-label="Suggest Translate Hindi phrases">🗣️ Hindi Phrases</button>
+            <button class="chip-btn" (click)="sendChatMessage('How to ask price')" aria-label="Suggest How to ask price">💰 Asking Price</button>
           } @else {
-            <button class="chip-btn" (click)="sendChatMessage('Araku Valley Scenic Tour')" aria-label="Suggest Araku Valley Scenic Tour">ðŸš‚ Araku Tour</button>
-            <button class="chip-btn" (click)="sendChatMessage('Munnar Hill Escape')" aria-label="Suggest Munnar Hill Escape">ðŸ”ï¸ Munnar Escape</button>
-            <button class="chip-btn" (click)="sendChatMessage('Agra Taj Mahal Plan')" aria-label="Suggest Agra Taj Mahal Plan">ðŸ•Œ Agra Plan</button>
-            <button class="chip-btn" (click)="sendChatMessage('Goa Beach Itinerary')" aria-label="Suggest Goa Beach Itinerary">ðŸ–ï¸ Goa Itinerary</button>
-            <button class="chip-btn" (click)="sendChatMessage('Recommend travel lofi song')" aria-label="Suggest Recommend travel lofi song">ðŸŽµ Travel Lofi</button>
+            <button class="chip-btn" (click)="sendChatMessage('Araku Valley Scenic Tour')" aria-label="Suggest Araku Valley Scenic Tour">🚂 Araku Tour</button>
+            <button class="chip-btn" (click)="sendChatMessage('Munnar Hill Escape')" aria-label="Suggest Munnar Hill Escape">⛰️ Munnar Escape</button>
+            <button class="chip-btn" (click)="sendChatMessage('Agra Taj Mahal Plan')" aria-label="Suggest Agra Taj Mahal Plan">⏳ Agra Plan</button>
+            <button class="chip-btn" (click)="sendChatMessage('Goa Beach Itinerary')" aria-label="Suggest Goa Beach Itinerary">🏖️ Goa Itinerary</button>
           }
         </div>
 
@@ -371,9 +356,17 @@
 
         <div class="profile-view">
           <div class="profile-header-card">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Sophia Sterling's avatar" class="profile-large-avatar" />
-            <h3 class="profile-name">Sophia Sterling</h3>
-            <span class="profile-status">Premium Backpacker</span>
+            @if (authService.currentUser()) {
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="User avatar" class="profile-large-avatar" />
+              <h3 class="profile-name">{{ authService.currentUser()?.name }}</h3>
+              <span class="profile-status">📱 {{ authService.currentUser()?.phone }}</span>
+              <button class="btn-signout-drawer" (click)="authService.logout()">Logout Account</button>
+            } @else {
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Guest avatar" class="profile-large-avatar" />
+              <h3 class="profile-name">Guest Explorer</h3>
+              <span class="profile-status">Not Signed In</span>
+              <button class="btn-signout-drawer" (click)="authService.openModal()">Sign In / Create Account</button>
+            }
           </div>
 
           
@@ -420,6 +413,30 @@
           </div>
 
           <div class="settings-section">
+            <h4>🎨 Theme Accent Customizer</h4>
+            <div class="theme-accent-row">
+              <button 
+                class="theme-chip emerald" 
+                [class.active]="activeTheme() === 'emerald'" 
+                (click)="setTheme('emerald')">
+                🟢 Emerald Green
+              </button>
+              <button 
+                class="theme-chip cyber" 
+                [class.active]="activeTheme() === 'cyber'" 
+                (click)="setTheme('cyber')">
+                🔵 Cyber Cyan
+              </button>
+              <button 
+                class="theme-chip amber" 
+                [class.active]="activeTheme() === 'amber'" 
+                (click)="setTheme('amber')">
+                🟠 Sunset Amber
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-section">
             <h4>Travel Assistant Config</h4>
             <div class="settings-list">
               <div class="setting-item">
@@ -450,65 +467,31 @@
     }
 
     
-    <app-music 
-      [(isOpen)]="isMusicDrawerOpen"
-      [(currentTrackIndex)]="musicTrackIndex"
-      [(isPlaying)]="musicIsPlaying"
-      [(playProgress)]="musicPlayProgress"
-      [(isShuffle)]="musicIsShuffle"
-      [(isRepeat)]="musicIsRepeat"
-    />
-
-    
     <app-food 
       [(isOpen)]="isFoodDrawerOpen"
-      [(cart)]="foodCart"
-      [(orderStatus)]="foodOrderStatus"
-      [(deliveryStep)]="foodDeliveryStep"
     />
   </main>
 
-  
   <div class="bottom-modules-dock">
-    
-    <div class="mini-music-card" (click)="isMusicDrawerOpen.set(true)" role="button" aria-label="Open Music Player">
-      <img [src]="currentTrack().image" alt="Artwork" class="mini-art" [class.playing]="musicIsPlaying()" />
-      <div class="mini-track-info">
-        <span class="mini-title">{{ currentTrack().title }}</span>
-        <span class="mini-artist">{{ currentTrack().artist }}</span>
-      </div>
-      
-      <button class="mini-play-btn" (click)="toggleMusicPlay($event)">
-        @if (musicIsPlaying()) { 
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-        } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-        }
-      </button>
-    </div>
-
-    
-    <div class="mini-food-card" (click)="isFoodDrawerOpen.set(true)" [class.active-order]="foodOrderStatus() === 'placed'" role="button" aria-label="Open Food Order">
-      <div class="mini-food-icon-wrapper" [class.scooter-pulse]="foodOrderStatus() === 'placed'">
-        @if (foodOrderStatus() === 'placed') {
-          
+    <div class="mini-food-card" (click)="isFoodDrawerOpen.set(true)" [class.active-order]="cartService.orderStatus() === 'placed'" role="button" aria-label="Open Food Order">
+      <div class="mini-food-icon-wrapper" [class.scooter-pulse]="cartService.orderStatus() === 'placed'">
+        @if (cartService.orderStatus() === 'placed') {
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
         } @else {
-          
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
         }
       </div>
       <div class="mini-food-info">
-        @if (foodOrderStatus() === 'placed') {
+        @if (cartService.orderStatus() === 'placed') {
           <span class="mini-food-title">Order Out!</span>
           <span class="mini-food-sub">
-            @if (foodDeliveryStep() === 1) { Preparing }
-            @if (foodDeliveryStep() === 2) { Out on Scooter }
-            @if (foodDeliveryStep() === 3) { Arrived in Lobby }
+            @if (cartService.deliveryStep() === 1) { Preparing }
+            @if (cartService.deliveryStep() === 2) { Out on Scooter }
+            @if (cartService.deliveryStep() === 3) { Arrived in Lobby }
           </span>
-        } @else if (cartCount() > 0) {
-          <span class="mini-food-title">Basket ({{ cartCount() }})</span>
-          <span class="mini-food-sub">â‚¹{{ (cartTotal() * 83).toFixed(0) }}</span>
+        } @else if (cartService.cartCount() > 0) {
+          <span class="mini-food-title">Basket ({{ cartService.cartCount() }})</span>
+          <span class="mini-food-sub">₹{{ cartService.cartTotal().toFixed(0) }}</span>
         } @else {
           <span class="mini-food-title">Order Bites</span>
           <span class="mini-food-sub">Local Cuisines</span>
@@ -530,4 +513,6 @@
     </button>
   </nav>
 </div>
+
+<app-auth />
 

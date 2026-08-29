@@ -1,4 +1,4 @@
-﻿import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom, Subject } from 'rxjs';
 import { ChatMessage, AiPersona } from './models';
@@ -11,8 +11,16 @@ interface ParsedAiResponse extends Pick<ChatMessage, 'thinkingSteps' | 'sources'
 export class AiService {
   readonly isAiThinking = signal(false);
   readonly isAiListening = signal(false);
-  readonly isAiSpeaking = signal(false);
   readonly isTalkBackEnabled = signal(true);
+  readonly isAiSpeaking = signal(false);
+
+  toggleVoiceTalkback(): void {
+    this.isTalkBackEnabled.update(enabled => !enabled);
+    if (!this.isTalkBackEnabled() && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      this.isAiSpeaking.set(false);
+    }
+  }
   readonly isContinuousVoiceMode = signal(false);
   readonly aiPersona = signal<AiPersona>('advisor');
   readonly chatMessages = signal<ChatMessage[]>([
@@ -37,7 +45,9 @@ export class AiService {
   private recognitionSuccess = new Subject<void>();
   readonly recognitionSuccess$ = this.recognitionSuccess.asObservable();
 
-  constructor(private http: HttpClient) {
+  private http = inject(HttpClient);
+
+  constructor() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const loadVoices = () => {
         this.availableVoices = window.speechSynthesis.getVoices();
@@ -334,9 +344,9 @@ ${context || ''}
 I can help with itineraries, food picks, local phrases, and smart travel planning.
 
 ${memoryAndProfile}`,
-        thinkingSteps: ['I recognized a greeting and opened with a warm travel-focused welcome.', 'I am ready to help with planning, food, music, or local guidance.'],
+        thinkingSteps: ['I recognized a greeting and opened with a warm travel-focused welcome.', 'I am ready to help with itinerary planning, food, or local guidance.'],
         sources: [{ name: 'Travel Concierge', icon: '🧭' }],
-        followUps: ['Plan a 3-day getaway', 'Recommend local food spots', 'Suggest a relaxing travel playlist'],
+        followUps: ['Plan a 3-day getaway', 'Recommend local food spots', 'Help with transport options'],
       };
     }
 
@@ -364,28 +374,6 @@ ${memoryAndProfile}`,
           rating: 4.8,
           prepTime: '25 mins',
           image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=400&q=80',
-        },
-      };
-    }
-
-    if (intent.includes('song') || intent.includes('music') || intent.includes('lofi') || intent.includes('playlist')) {
-      return {
-        text: `A calm travel playlist is a great fit for this request. I would start with mellow instrumentals, a few upbeat tracks, and a late-evening chill section.
-
-${personaLine}
-${context || ''}
-
-${memoryAndProfile}`,
-        thinkingSteps: ['I recognized a music request.', 'I am curating a travel-friendly audio experience.'],
-        sources: [{ name: 'Mood Playlist', icon: '🎵' }],
-        followUps: ['Play a rainy day playlist', 'Suggest a road-trip mix', 'Recommend local indie tracks'],
-        actionType: 'music',
-        actionData: {
-          id: '1',
-          title: 'Midnight Mail Transit',
-          artist: 'Mumbai Lofi',
-          image: '/lofi-india.png',
-          trackId: '1',
         },
       };
     }

@@ -1,58 +1,46 @@
-﻿import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, signal, computed, inject, OnInit, OnDestroy } from '@angular/core';
 import { ExploreComponent } from './components/explore/explore';
-import { MusicComponent } from './components/music/music';
 import { FoodComponent } from './components/food/food';
+import { AuthComponent } from './components/auth/auth';
 import { CommonModule } from '@angular/common';
-import { ChatMessage, AiPersona, Track } from './models';
+import { ChatMessage, AiPersona } from './models';
 import { AiService } from './ai.service';
+import { CartService, MenuItem } from './services/cart.service';
+import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, ExploreComponent, MusicComponent, FoodComponent],
+  imports: [CommonModule, ExploreComponent, FoodComponent, AuthComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
 export class App implements OnInit, OnDestroy {
   protected readonly aiService = inject(AiService);
+  protected readonly cartService = inject(CartService);
+  protected readonly authService = inject(AuthService);
 
-  protected readonly isMusicDrawerOpen = signal(false);
   protected readonly isFoodDrawerOpen = signal(false);
   protected readonly isProfileDrawerOpen = signal(false);
   protected readonly isAiDrawerOpen = signal(false);
 
-  protected readonly musicTrackIndex = signal(0);
-  protected readonly musicIsPlaying = signal(false);
-  protected readonly musicPlayProgress = signal(35);
-  protected readonly musicIsShuffle = signal(false);
-  protected readonly musicIsRepeat = signal(false);
+  protected readonly activeTheme = signal<'emerald' | 'cyber' | 'amber'>('emerald');
 
-  protected readonly foodCart = signal<any[]>([]);
-  protected readonly foodOrderStatus = signal<'idle' | 'checking_out' | 'placed'>('idle');
-  protected readonly foodDeliveryStep = signal(1);
+  protected setTheme(theme: 'emerald' | 'cyber' | 'amber'): void {
+    this.activeTheme.set(theme);
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }
 
-  protected readonly playlist: Track[] = [ 
-    { id: '1', title: 'Midnight Mail Transit', artist: 'Mumbai Lofi', image: '/lofi-india.png' },
-    { id: '2', title: 'Calm Streets', artist: 'Lofi Girl', image: '/lofi-travel.png' },
-    { id: '3', title: 'Kyoto Tea House', artist: 'Tokyo Lofi Society', image: '/kyoto.png' },
-    { id: '4', title: 'Monsoon Flamenco', artist: 'Barcelona Chill', image: '/lofi-travel.png' },
-    { id: '5', title: 'Neeve Lofi', artist: 'Tollywood Chill', image: '/lofi-india.png' },
-    { id: '6', title: 'Samayama Coastal Drive', artist: 'Vizag Sunset Beats', image: '/vizag.png' },
-    { id: '7', title: 'Venice Gondola Chill', artist: 'Gelato Beats', image: '/lofi-travel.png' }
-  ];
+  protected readonly statusTime = signal<string>(this.getFormattedTime());
+  private clockInterval: any = null;
 
-  protected readonly currentTrack = computed(() => {
-    return this.playlist[this.musicTrackIndex()];
-  });
-
-  protected readonly cartCount = computed(() => {
-    return this.foodCart().reduce((sum, item) => sum + item.quantity, 0);
-  });
-
-  protected readonly cartTotal = computed(() => {
-    return this.foodCart().reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
-  });
+  private getFormattedTime(): string {
+    const now = new Date();
+    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  }
 
   protected readonly tripDays = signal(5);
   protected readonly travelerCount = signal(2);
@@ -69,7 +57,7 @@ export class App implements OnInit, OnDestroy {
     const people = this.travelerCount();
     const style = this.travelStyle();
     
-    let multiplier = 2500; // comfort per day per person
+    let multiplier = 2500;
     if (style === 'budget') multiplier = 1200;
     if (style === 'luxury') multiplier = 6000;
 
@@ -84,11 +72,6 @@ export class App implements OnInit, OnDestroy {
   });
 
   private subscriptions = new Subscription();
-
-  protected toggleMusicPlay(event: Event): void {
-    event.stopPropagation();
-    this.musicIsPlaying.update(p => !p);
-  }
 
   protected selectTripPreference(category: 'budget' | 'transport' | 'pace', value: string): void {
     this.tripPreferences.update(current => ({ ...current, [category]: value }));
@@ -111,10 +94,17 @@ export class App implements OnInit, OnDestroy {
       this.openAiConcierge();
     });
     this.subscriptions.add(sub);
+
+    this.clockInterval = setInterval(() => {
+      this.statusTime.set(this.getFormattedTime());
+    }, 10000);
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+    }
   }
 
   protected openAiConcierge(): void {
@@ -158,7 +148,7 @@ export class App implements OnInit, OnDestroy {
     }
 
     const greeting = 'Yes, how can I help you?';
-    this.aiService.setVoiceState('speaking'); // Set state to speaking for greeting
+    this.aiService.setVoiceState('speaking');
     this.aiService.chatMessages.update(msgs => [...msgs, { sender: 'ai', text: greeting, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }]);
     this.aiService.speakText(greeting);
     this.startVoiceRecognition();
@@ -182,7 +172,7 @@ export class App implements OnInit, OnDestroy {
   }
 
   protected toggleTalkBack(): void {
-    this.aiService.isTalkBackEnabled.update(v => !v);
+    this.aiService.toggleVoiceTalkback();
   }
 
   protected setPersona(persona: AiPersona): void {
@@ -194,38 +184,19 @@ export class App implements OnInit, OnDestroy {
     this.aiService.sendChatMessage(query, this.buildProfessionalTripContext());
   }
 
-  protected playTrackFromAi(trackId: string): void {
-    const idx = this.playlist.findIndex(t => t.id === trackId);
-    if (idx !== -1) {
-      this.musicTrackIndex.set(idx);
-      this.musicIsPlaying.set(true);
-      const track = this.playlist[idx];
-      this.aiService.speakText(`Now playing ${track.title}`);
-    }
-  }
-
   protected addFoodFromAi(foodItem: any): void {
-    const currentCart = [...this.foodCart()];
-    const existing = currentCart.find(i => i.menuItem.id === foodItem.id || i.menuItem.name === foodItem.name);
-    
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      currentCart.push({
-        menuItem: {
-          id: foodItem.id || 'ai-food-' + Date.now(),
-          name: foodItem.name,
-          price: foodItem.price || 299,
-          rating: foodItem.rating || 4.7,
-          isVeg: true,
-          prepTime: foodItem.prepTime || '20 mins',
-          image: foodItem.image || 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80'
-        },
-        quantity: 1
-      });
-    }
-    
-    this.foodCart.set(currentCart);
+    const menuItem: MenuItem = {
+      id: foodItem.id || 'ai-food-' + Date.now(),
+      name: foodItem.name,
+      price: foodItem.price || 299,
+      description: foodItem.description || 'Special local dish recommended by AI Saathi assistant',
+      category: foodItem.category || 'Special',
+      rating: foodItem.rating || 4.7,
+      isVeg: foodItem.isVeg ?? true,
+      prepTime: foodItem.prepTime || '20 mins',
+      image: foodItem.image || 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80'
+    };
+    this.cartService.addToCart(menuItem);
     this.aiService.speakText(`Added ${foodItem.name} to your food cart!`);
     this.isFoodDrawerOpen.set(true);
   }

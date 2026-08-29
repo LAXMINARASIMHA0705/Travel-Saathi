@@ -1,0 +1,131 @@
+@if (authService.isAuthModalOpen()) {
+  <div class="auth-backdrop animate-fade-in">
+    <div class="auth-card animate-scale-up" role="dialog" aria-modal="true">
+      
+      <!-- Brand Header -->
+      <div class="auth-brand-header">
+        <div class="auth-logo-badge">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+          </svg>
+        </div>
+        <h2 class="auth-title">Welcome to <span>TRAVEL SAATHI</span></h2>
+        <p class="auth-subtitle">Please Sign In or Register to Access Travel Saathi</p>
+      </div>
+
+      <!-- Auth Tabs Switcher -->
+      <div class="auth-tab-row">
+        <button 
+          class="auth-tab-btn" 
+          [class.active]="activeTab() === 'signin'" 
+          (click)="switchTab('signin')">
+          🔑 Sign In
+        </button>
+        <button 
+          class="auth-tab-btn" 
+          [class.active]="activeTab() === 'signup'" 
+          (click)="switchTab('signup')">
+          ✨ New Account
+        </button>
+      </div>
+
+      <!-- SIGN IN FORM (Mobile + Password) -->
+      @if (activeTab() === 'signin') {
+        <form class="auth-form animate-fade-in" (submit)="handleLogin($event)">
+          @if (loginError()) {
+            <div class="auth-alert error">{{ loginError() }}</div>
+          }
+
+          <div class="input-field-group">
+            <label>Mobile Number</label>
+            <div class="input-wrapper">
+              <span class="field-icon">📱</span>
+              <input 
+                type="tel" 
+                placeholder="10-digit mobile (e.g. 9876543210)" 
+                [value]="loginPhone()"
+                (input)="loginPhone.set($any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+              <span class="field-icon">🔒</span>
+              <input 
+                type="password" 
+                placeholder="Enter password" 
+                [value]="loginPassword()"
+                (input)="loginPassword.set($any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-auth">
+            Sign In 🚀
+          </button>
+        </form>
+      }
+
+      <!-- SIGN UP FORM (Name + Mobile + Password) -->
+      @if (activeTab() === 'signup') {
+        <form class="auth-form animate-fade-in" (submit)="handleSignUp($event)">
+          @if (regError()) {
+            <div class="auth-alert error">{{ regError() }}</div>
+          }
+
+          <div class="input-field-group">
+            <label>Your Name</label>
+            <div class="input-wrapper">
+              <span class="field-icon">👤</span>
+              <input 
+                type="text" 
+                placeholder="Full Name (e.g. Rahul Sharma)" 
+                [value]="regName()"
+                (input)="regName.set($any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label>Mobile Number</label>
+            <div class="input-wrapper">
+              <span class="field-icon">📱</span>
+              <input 
+                type="tel" 
+                placeholder="10-digit mobile number" 
+                [value]="regPhone()"
+                (input)="regPhone.set($any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-field-group">
+            <label>Password</label>
+            <div class="input-wrapper">
+              <span class="field-icon">🔒</span>
+              <input 
+                type="password" 
+                placeholder="Create password" 
+                [value]="regPassword()"
+                (input)="regPassword.set($any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-auth glow-accent">
+            Register Account & Continue ✨
+          </button>
+        </form>
+      }
+
+    </div>
+  </div>
+}

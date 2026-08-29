@@ -1,13 +1,17 @@
-﻿import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { describe, beforeEach, it, expect } from 'vitest';
 import { App } from './app';
+import { ExploreComponent } from './components/explore/explore';
+import { FoodComponent } from './components/food/food';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, ExploreComponent, FoodComponent],
       providers: [provideHttpClient()],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     }).compileComponents();
   });
 
@@ -21,7 +25,7 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.logo-text')?.textContent).toContain('VOYAGER');
+    expect(compiled.querySelector('.logo-text')?.textContent).toContain('TRAVEL SAATHI');
   });
 
   it('should include user-selected travel preferences in the trip context', () => {

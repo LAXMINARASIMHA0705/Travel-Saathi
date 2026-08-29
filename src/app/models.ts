@@ -1,10 +1,3 @@
-﻿export interface Track {
-  id: string;
-  title: string;
-  artist: string;
-  image: string;
-}
-
 export interface ChatMessage {
   sender: 'ai' | 'user';
   text: string;
@@ -12,7 +5,7 @@ export interface ChatMessage {
   thinkingSteps?: string[];
   sources?: Array<{ name: string; icon: string }>;
   followUps?: string[];
-  actionType?: 'music' | 'food' | 'itinerary' | 'phrase';
+  actionType?: 'food' | 'itinerary' | 'phrase';
   actionData?: any;
 }
 
