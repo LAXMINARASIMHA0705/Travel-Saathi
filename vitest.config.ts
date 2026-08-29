@@ -1,8 +1,9 @@
 import { defineConfig, Plugin } from 'vitest/config';
-import fs from 
-import path from
+import fs from 'fs';
+import path from 'path';
 
-  (): Plugin => (
+function angularComponentResourcePlugin(): Plugin {
+  return {
     name: 'angular-component-resource-plugin',
     transform(code: string, id: string) {
       if (!id.endsWith('.ts') || id.endsWith('.spec.ts')) return null;
@@ -29,7 +30,8 @@ import path from
 
       return { code: transformed, map: null };
     }
-  })
+  };
+}
 
 export default defineConfig({
   plugins: [angularComponentResourcePlugin()],
