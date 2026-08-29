@@ -3,6 +3,8 @@
 > **AI-Powered Smart Travel Companion & Local Culinary Guide**  
 > Built with **Angular 21 (Standalone Components & Signals)**, **Web Speech API**, **Web Audio API**, and **Vitest**.
 
+🔗 **[Click Here to Try the Live Interactive UI](https://laxminarasimha0705.github.io/Travel-Saathi/)**
+
 ---
 
 ## 🌟 Overview
