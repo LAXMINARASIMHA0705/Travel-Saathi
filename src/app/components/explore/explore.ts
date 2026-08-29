@@ -717,6 +717,22 @@ Planned with Travel Saathi 🧭`;
     if (!query || !query.trim()) return;
     const rawQuery = query.trim();
     const key = rawQuery.toLowerCase();
+
+    // Check if destination already exists in current list
+    const existing = this.destinations().find(d => 
+      d.title.toLowerCase().includes(key) || 
+      d.location.toLowerCase().includes(key) ||
+      key.includes(d.title.toLowerCase())
+    );
+
+    if (existing) {
+      this.selectedCategory.set('all');
+      this.selectedRegion.set('all');
+      this.expandedDestinationId.set(existing.id);
+      this.searchQuery.set('');
+      return;
+    }
+
     const formattedTitle = rawQuery.charAt(0).toUpperCase() + rawQuery.slice(1);
     const newId = (Date.now()).toString();
 
@@ -734,6 +750,7 @@ Planned with Travel Saathi 🧭`;
         image: preset.image || 'goa.png',
         rating: 4.9,
         category: preset.category || 'nature',
+        region: preset.region || 'South',
         tags: preset.tags,
         description: preset.description,
         spots: preset.spots,
@@ -772,6 +789,7 @@ Planned with Travel Saathi 🧭`;
         image: 'goa.png',
         rating: 4.9,
         category: 'nature',
+        region: 'North',
         tags: ['All-India Travel', 'Heritage', 'Scenic Spot'],
         description: `Comprehensive travel companion guide for ${formattedTitle}, India. Discover iconic monuments, natural viewpoints, vibrant markets, and authentic regional delicacies.`,
         spots: [`${formattedTitle} Heritage Center`, `${formattedTitle} Main Bazaar`, `${formattedTitle} Scenic Sunset Viewpoint`],
@@ -811,6 +829,8 @@ Planned with Travel Saathi 🧭`;
       };
     }
 
+    this.selectedCategory.set('all');
+    this.selectedRegion.set('all');
     this.destinations.update(dests => [newDest, ...dests]);
     this.expandedDestinationId.set(newId);
     this.searchQuery.set('');
