@@ -1,6 +1,6 @@
 import { defineConfig, Plugin } from 'vitest/config';
-import fs from 
-import path from
+import fs from 'fs';
+import path from 'path';
 
   function angularComponentResourcePlugin(): Plugin {
     return {

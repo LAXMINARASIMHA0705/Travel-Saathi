@@ -1,6 +1,7 @@
 {
-  "name": "travel-companion",
-  "version": "0.0.0",
+  "name": "travel-saathi",
+  "version": "1.0.0",
+  "description": "AI-Powered Smart Travel & Local Culinary Companion built with Angular 21, Signals & Web Speech API",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
