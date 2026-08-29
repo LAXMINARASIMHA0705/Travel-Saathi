@@ -20,6 +20,7 @@ interface PlacePreset {
   location: string;
   image?: string;
   category: string;
+  region?: 'North' | 'South' | 'East' | 'West' | 'North-East' | 'Islands';
   tags: string[];
   description: string;
   spots: string[];
